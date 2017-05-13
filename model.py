@@ -1,9 +1,9 @@
 """Models and database functions for Sasha's Unnamed Project."""
 
-from flask_sqlalchemy import flask_sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 
 db = SQLAlchemy()
-
 
 ###############################################################################
 # Model Definitions
@@ -14,65 +14,46 @@ class Location(db.Model):
 
     __tablename__ = "locations"
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    location_id = db.Column(db.Integer, autoincrement=False, primary_key=True)
     district_id = db.Column(db.Integer, nullable=True)
-    state_id = db.Column(db.Integer, nullable=False)
     state_name = db.Column(db.String(15), nullable=False)
-    citizens = relationship("Citizen", secondary="location_citizens_link")
-    elected_reps = relationship("ElectedRep")
+    # elected_reps = db.relationship("ElectedRep")
 
     def __repr__(self):
-        return "<Location: Type things here later.>"
+        return "<Location: location_id=%s, district_id=%s, state_name=%s>" % (
+            str(location_id), str(district_id), state_name)
 
 
-class Citizen(db.Model):
+class CitizenGroup(db.Model):
     """Employed U.S. citizens grouped by male/female & all jobs/management jobs."""
 
-    __tablename__ = "citizens"
+    __tablename__ = "citizen_groups"
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    group_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     female = db.Column(db.Boolean, nullable=False)
     manager = db.Column(db.Boolean, nullable=False)
     population = db.Column(db.Integer, nullable=True)
-    location_id = db.Column(db.Integer, ForeignKey("locations.id"), nullable=False)
-    locations = relationship("Location", secondary="location_citizens_link")
+    district_id = db.Column(db.Integer, nullable=True)
+    state_name = db.Column(db.String(20), nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
+    location = db.relationship("Location", backref=db.backref("citizen_groups"))
 
     def __repr__(self):
         return "<Citizen: Type things here later.>"
 
+# class ElectedRep(db.Model):
 
-class LocationCitizenLink(db.Model):
+#     __tablename__ = "elected_reps"
 
-    __tablename__ = "location_citizens_link"
+#     official_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
+#     rep_type = db.Column(db.String(10), nullable=False)
+#     female = db.Column(db.Boolean, nullable=False)
+#     state_name = db.Column(db.String(15), nullable=False)
+#     year = db.Column(db.Integer)
 
-    location_id = db.Column(db.Integer, ForeignKey("locations.id"), primary_key=True)
-    citizen_id = db.Column(db.Integer, ForeignKey("citizens.id"), primary_key=True)
-
-    def __repr__(self):
-        return "<LocationCitizenLink: Type things here later.>"
-
-
-class ElectedRep(db.Model):
-
-    __tablename__ = "elected_reps"
-
-    official_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    location_id = db.Column(db.Integer, ForeignKey("locations.id"), nullable=False)
-    rep_type = db.Column(db.String(10), nullable=False)
-    female = db.Column(db.Boolean, nullable=False)
-    state_name = db.Column(db.String(15), nullable=False)
-    year = db.Column(db.Integer)
-
-    def __repr__(self):
-        return "<ElectedRep: Type things here later.>"
-
-
-class Zipcode(db.Model):
-
-    __tablename__ = "zipcodes"
-
-    zipcode = db.Column(db.Integer, nullable=False, primary_key=True)
-    location_id = db.Column(db.Integer, ForeignKey("locations.id"), nullable=False)
+#     def __repr__(self):
+#         return "<ElectedRep: Type things here later.>"
 
 
 ##############################################################################
@@ -84,6 +65,7 @@ def connect_to_db(app):
     # Configure to use PostgreSQL database
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///jobs"
     app.config["SQLALCHEMY_ECHO"] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 
