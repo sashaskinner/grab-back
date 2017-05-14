@@ -1,8 +1,8 @@
 from sqlalchemy import func
 from model import Location
 from model import CitizenGroup
-# from model import ElectedRep
-# from model import Zipcode
+from model import ElectedRep
+from model import Zipcode
 
 from model import connect_to_db, db
 from server import app
@@ -32,9 +32,14 @@ def load_locations():
 
         d[location_id] = [district_id, state_name]
 
-        loc = Location(location_id=location_id,
-                       district_id=district_id,
-                       state_name=state_name)
+        if district_id == '':
+          loc = Location(location_id=location_id,
+                         district_id=None,
+                         state_name=state_name)
+        else:
+          loc = Location(location_id=location_id,
+                         district_id=district_id,
+                         state_name=state_name)
 
         # We need to add to the session or it won't ever be stored
         db.session.add(loc)
@@ -88,45 +93,60 @@ def load_citizen_groups():
     db.session.commit()
 
 
-# def load_elected_reps():
-#   """Load data describing members of U.S. Congress to table in db."""
+def load_elected_reps():
+    """Load data describing members of U.S. Congress to table in db."""
 
-#   ElectedRep.query.delete()
+    ElectedRep.query.delete()
+
+    with file('seed_data/elected_officials.csv', 'rb') as f:
+            reader = csv.reader(f)
+            congress_list = list(reader)
+            del congress_list[0]
+
+    for row in congress_list:
+
+        official_id, rep_type, female, state_name, district_id, year = row
+
+        q = db.session.query(Location.location_id).filter_by(district_id=int(district_id), state_name=state_name).one()
+
+        offic = ElectedRep(official_id=official_id,
+                           rep_type=rep_type,
+                           female=female,
+                           state_name=state_name,
+                           district_id=district_id,
+                           year=year,
+                           location_id=q)
+
+            # We need to add to the session or it won't ever be stored
+        db.session.add(offic)
+
+          # Once we're done, we should commit our work
+    db.session.commit()
 
 
-#   with file('seed_data/elected_officials.csv', 'rb') as f:
-#       reader = csv.reader(f)
-#       congress_list = list(reader)
+def load_zipcodes():
 
+    with file('seed_data/zipcode.csv', 'rb') as f:
+        reader = csv.reader(f)
+        zip_list = list(reader)
+        del zip_list[0]
 
-#   for row in congress_list:
+    for row in zip_list:
 
-#       official_id, female, state_name, district_id, year = row
+        z_id, zipcode, district_id, state_name = row
 
-#       q = db.session.query(Location.location_id).filter_by(district_id=district_id,
-#                                                            state_name=state_name).one()
+        q = db.session.query(Location.location_id).filter_by(district_id=int(district_id), state_name=state_name).first()
 
-#       if district_id == '':
-#           cit = CitizenGroup(official_id=int(official_id),
-#                              female=female,
-#                              state_name=state_name,
-#                              district_id=district_id,
-#                              year=year
-#                              location_id=location_id)
+        zips = Zipcode(z_id=z_id,
+                       zipcode=zipcode,
+                       district_id=district_id,
+                       state_name=state_name,
+                       location_id=q)
 
-#       else:
-#           cit = CitizenGroup(official_id=int(official_id),
-#                              female=female,
-#                              state_name=state_name,
-#                              district_id=district_id,
-#                              year=year,
-#                              location_id=q)
+        db.session.add(zips)
 
-#         # We need to add to the session or it won't ever be stored
-#         db.session.add(cit)
+    db.session.commit()
 
-#     # Once we're done, we should commit our work
-#     db.session.commit()
 
 if __name__ == "__main__":
     connect_to_db(app)
@@ -137,3 +157,5 @@ if __name__ == "__main__":
     # Import different types of data
     load_locations()
     load_citizen_groups()
+    load_elected_reps()
+    load_zipcodes()
