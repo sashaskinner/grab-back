@@ -17,11 +17,13 @@ class Location(db.Model):
     location_id = db.Column(db.Integer, autoincrement=False, primary_key=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(15), nullable=False)
-    elected_reps = db.relationship("ElectedRep")
+    elected_reps = db.relationship("ElectedRep", backref=db.backref("location"))
+    zipcode = db.relationship("Zipcode", backref=db.backref("location"))
+    citizen_groups = db.relationship("CitizenGroup", backref=db.backref("location"))
 
     def __repr__(self):
         return "<Location: location_id: %d, district_id: %d, state_name: %s>" % (
-            location_id, district_id, state_name)
+            self.location_id, self.district_id, self.state_name)
 
 
 class CitizenGroup(db.Model):
@@ -36,11 +38,10 @@ class CitizenGroup(db.Model):
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(20), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
-    location = db.relationship("Location", backref=db.backref("citizen_groups"))
 
     def __repr__(self):
-        return "<Citizen: Female: %s, Manager: %s, Population: %d, dist_id: %d, state: %s >" % (
-            female, manager, population, district_id, state_name)
+        return "<Citizen: Female: %s, Manager: %s, Population: %r, dist_id: %r, state: %s >" % (
+            self.female, self.manager, self.population, self.district_id, self.state_name)
 
 
 class ElectedRep(db.Model):
@@ -54,11 +55,10 @@ class ElectedRep(db.Model):
     district_id = db.Column(db.Integer, nullable=True)
     year = db.Column(db.Integer)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
-    location = db.relationship("Location")
 
     def __repr__(self):
         return "<ElectedRep: RepType: %s, Female: %s, dist_id: %d, state: %s>" % (
-            rep_type, female, district_id, state_name)
+            self.rep_type, self.female, self.district_id, self.state_name)
 
 
 class Zipcode(db.Model):
@@ -70,11 +70,10 @@ class Zipcode(db.Model):
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(20), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
-    location = db.relationship("Location", backref=db.backref("zipcode"))
 
     def __repr__(self):
         return "<Zipcode: %d, dist_id: %d, state_name: %s>" % (
-            zipcode, district_id, state_name)
+            self.zipcode, self.district_id, self.state_name)
 
 
 ##############################################################################

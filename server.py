@@ -48,6 +48,19 @@ def two_maps():
     # query for election information
 
 
+@app.route('/us.json')
+def us_json():
+    """JSON file with US map specs."""
+
+    return render_template("us.json")
+
+
+@app.route('/us-congress-113.json')
+def us_congress_113():
+    """JSON file with congressional district shapes for us map."""
+
+    return render_template("us-congress-113.json")
+
 
 if __name__ == "__main__":
 
