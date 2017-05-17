@@ -15,21 +15,21 @@
     }
 
     .districts :hover {
-      fill: orange;
+      fill: #e11a88;
     }
 
     .district-boundaries {
       pointer-events: none;
       fill: none;
       stroke: #fff;
-      stroke-width: .5px;
+      stroke-width: .6px;
     }
 
     .state-boundaries {
       pointer-events: none;
       fill: none;
       stroke: #fff;
-      stroke-width: 1.5px;
+      stroke-width: .9px;
     }
 
     </style>
@@ -40,11 +40,24 @@
     <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
     <script src="static/js/queue.v1.min.js"></script>
     <script src="static/js/topojson.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script type="text/javascript">
 
     var width = 960,
         height = 600;
 
+    // minimum & maximum population values
+    var minimum = 0, 
+        maximum = 1;
+
+    // define color scale
+    var minimumColor = "#fee6ce", 
+        maximumColor = "#e6550d"
+
+    var color = d3.scaleLinear().domain([minimum, maximum])
+        .range([minimumColor, maximumColor]);
+
+    //
     var projection = d3.geoAlbersUsa()
         .scale(1280)
         .translate([width / 2, height / 2]);
@@ -59,9 +72,10 @@
     queue()
         .defer(d3.json, "/us.json")
         .defer(d3.json, "/us-congress-113.json")
+        .defer(d3.json, "/district-pop-info.json")
         .await(ready);
 
-    function ready(error, us, congress) {
+    function ready(error, us, congress, district) {
       if (error) throw error;
 
       svg.append("defs").append("path")
@@ -74,16 +88,21 @@
         .append("use")
           .attr("xlink:href", "#land");
           
+      // congressional districts
       svg.append("g")
           .attr("class", "districts")
           .attr("clip-path", "url(#clip-land)")
-        .selectAll("path")
+          .selectAll("path")
           .data(topojson.feature(congress, congress.objects.districts).features)
-        .enter().append("path")
+      .enter().append("path")
           .attr("d", path)
+          .style("fill", function (d) {
+            console.log(district[d.id]);
+            return color(district[d.id]); })
         .append("title")
           .text(function(d) { return d.id; });
 
+      // district borders
       svg.append("path")
           .attr("class", "district-boundaries")
           .datum(topojson.mesh(congress, congress.objects.districts, function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))

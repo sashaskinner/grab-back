@@ -34,7 +34,7 @@ class CitizenGroup(db.Model):
     group_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     female = db.Column(db.Boolean, nullable=False)
     manager = db.Column(db.Boolean, nullable=False)
-    population = db.Column(db.Integer, nullable=True)
+    population = db.Column(db.Float, nullable=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(20), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
