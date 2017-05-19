@@ -12,18 +12,19 @@
         <script src="static/js/queue.v1.min.js"></script>
         <script src="static/js/topojson.v1.min.js"></script>
         <script type="text/javascript"></script>  
-    <button type="button" id="make-json">See JSON</button>
         <script> 
         // testing ajax request from flask jsonify
 
-    function confirmJSON() {
-    
-        $.get("/district-pop-info.json", function (results) {
-            console.log(results)
-        })
-    }
+    // IF POPULATION TYPE IS MANAGER AND AREA
 
-        $("#make-json").on("click", confirmJSON);
+    // function confirmJSON() {
+    
+    //     $.get("/district-pop-info.json", function (results) {
+    //         console.log(results)
+    //     })
+    // }
+
+        // $("#make-json").on("click", confirmJSON);
 
         </script>
 

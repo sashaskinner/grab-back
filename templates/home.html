@@ -10,6 +10,12 @@
       stroke-linecap: round;
     }
 
+    svg {
+      display: block;
+      margin-left: auto;
+      margin-right: 45%;
+    }
+
     .districts {
       fill: #bbb;
     }
@@ -22,20 +28,33 @@
       pointer-events: none;
       fill: none;
       stroke: #fff;
-      stroke-width: .6px;
+      stroke-width: .5px;
     }
 
     .state-boundaries {
       pointer-events: none;
       fill: none;
       stroke: #fff;
-      stroke-width: .9px;
+      stroke-width: 1.25px;
+    }
+
+    #switch-buttons {
+      margin-left: 70%;
+      margin-right: auto;
+      margin-top: auto;
+    }
+
+    .switch {
+      font-family: Arial;
     }
 
     </style>
 </head>
 
 <body>
+
+  <h3 align='center'>Percentage of Women in Management Positions by Congressional District</h4>
+
     <script type="text/javascript" src="static/d3/d3.min.js"></script>
     <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
     <script src="static/js/queue.v1.min.js"></script>
@@ -47,12 +66,12 @@
         height = 600;
 
     // minimum & maximum population values
-    var minimum = 0, 
-        maximum = 1;
+    var minimum = 0.28, 
+        maximum = 0.62;
 
     // define color scale
-    var minimumColor = "#fee6ce", 
-        maximumColor = "#e6550d"
+    var minimumColor = "#edf8fb", 
+        maximumColor = "#005824"
 
     var color = d3.scaleLinear().domain([minimum, maximum])
         .range([minimumColor, maximumColor]);
@@ -72,7 +91,7 @@
     queue()
         .defer(d3.json, "/us.json")
         .defer(d3.json, "/us-congress-113.json")
-        .defer(d3.json, "/district-pop-info.json")
+        .defer(d3.json, "/district-manager-info.json")
         .await(ready);
 
     function ready(error, us, congress, district) {
@@ -97,8 +116,12 @@
       .enter().append("path")
           .attr("d", path)
           .style("fill", function (d) {
-            console.log(district[d.id]);
-            return color(district[d.id]); })
+            if (district[d.id]) {
+              return color(district[d.id]); }
+            else {
+              return "#F2F3F4" }
+          })
+          
         .append("title")
           .text(function(d) { return d.id; });
 
@@ -117,6 +140,14 @@
     d3.select(self.frameElement).style("height", height + "px");
 
     </script>
+
+    <br><br>
+    <br><br>
+    <div id="switch-buttons">
+    <button class="switch" id="show-employees">All Women</button>
+    <button class="switch" id="show-managers">Women in Management</button>
+    <button class="switch" id="show-congress">Women in U.S. Congress</button>
+  </div>
 
 
 </body>
