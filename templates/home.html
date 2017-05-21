@@ -53,33 +53,41 @@
 
 <body>
 
-  <h3 align='center'>Percentage of Women in Management Positions by Congressional District</h4>
 
+
+    <script type="text/javascript" src="static/js/women-employees.js"></script>
+    <script type="text/javascript" src="static/js/women-managers.js"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
     <script type="text/javascript" src="static/d3/d3.min.js"></script>
     <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
     <script src="static/js/queue.v1.min.js"></script>
-    <script src="static/js/topojson.v1.min.js"></script>
+    <script src="static/js/topojson-client/topojson-client.min.js"></script>
+    
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+  <div id="option">
+    <button type="submit" onclick="womenEmployeesData()">All Employees (% Women)</button>
+    <button type="submit" onclick="womenManagersData()">Managers (% Women)</button>
+
+  </div>
+
+
     <script type="text/javascript">
 
     var width = 960,
         height = 600;
 
-    // minimum & maximum population values
-    var minimum = 0.28, 
-        maximum = 0.62;
-
     // define color scale
-    var minimumColor = "#edf8fb", 
-        maximumColor = "#005824"
+    var minimumColor = "#edf8fb",
+        maximumColor = "#005824";
 
-    var color = d3.scaleLinear().domain([minimum, maximum])
-        .range([minimumColor, maximumColor]);
-
-    //
     var projection = d3.geoAlbersUsa()
-        .scale(1280)
-        .translate([width / 2, height / 2]);
+      .scale(1280)
+      .translate([width / 2, height / 2]);
 
     var path = d3.geoPath()
         .projection(projection);
@@ -87,6 +95,13 @@
     var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
+
+    // minimum & maximum population values
+    var minimum = 0.28,
+        maximum = 0.62;
+
+    var color = d3.scaleLinear().domain([minimum, maximum])
+    .range([minimumColor, maximumColor]);
 
     queue()
         .defer(d3.json, "/us.json")
@@ -119,35 +134,60 @@
             if (district[d.id]) {
               return color(district[d.id]); }
             else {
-              return "#F2F3F4" }
+              return "#F2F3F4"; }
           })
-          
+
         .append("title")
           .text(function(d) { return d.id; });
 
-      // district borders
       svg.append("path")
           .attr("class", "district-boundaries")
-          .datum(topojson.mesh(congress, congress.objects.districts, function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))
+          .datum(topojson.mesh(congress, congress.objects.districts,
+            function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))
           .attr("d", path);
 
       svg.append("path")
           .attr("class", "state-boundaries")
-          .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+          .datum(topojson.mesh(us, us.objects.states,
+            function(a, b) { return a !== b; }))
           .attr("d", path);
-    }
+      
+        d3.select(self.frameElement).style("height", height + "px");
 
-    d3.select(self.frameElement).style("height", height + "px");
+      }
+
+
+    function womenEmployeesData() {
+
+      var minimum = 0.33,
+          maximum = 0.52;
+
+        queue()
+        .defer(d3.json, "/us.json")
+        .defer(d3.json, "/us-congress-113.json")
+        .defer(d3.json, "/district-employee-info.json")
+        .await(ready);
+
+        ready(error, us, congress, district);
+}
+
+  function womenManagersData() {
+
+        var minimum = 0.28,
+            maximum = 0.62;
+
+        queue()
+        .defer(d3.json, "/us.json")
+        .defer(d3.json, "/us-congress-113.json")
+        .defer(d3.json, "/district-manager-info.json")
+        .await(ready);
+
+        ready(error, us, congress, district);
+
+  }
+
 
     </script>
-
-    <br><br>
-    <br><br>
-    <div id="switch-buttons">
-    <button class="switch" id="show-employees">All Women</button>
-    <button class="switch" id="show-managers">Women in Management</button>
-    <button class="switch" id="show-congress">Women in U.S. Congress</button>
-  </div>
 
 
 </body>
