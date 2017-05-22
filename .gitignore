@@ -3,3 +3,5 @@ env
 .DS_Store
 *.numbers
 secrets.sh
+other_data
+templates/blank.html
