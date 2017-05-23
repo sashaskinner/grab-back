@@ -126,7 +126,6 @@ def get_employee_info():
 
     return jsonify(data_dict)
 
-
 @app.route('/district-congress-info.json')
 def get_congress_info():
     """Query db for population info: Congress Reps
@@ -214,6 +213,119 @@ def get_congress_info():
 
     return jsonify(data_dict)
 
+
+@app.route('/chart-data-employee')
+def get_employee_chart_data():
+    """ """
+
+    data_dict = get_chart_employee()
+
+    chart_labels = []
+    chart_data = []
+    data_dict_transfer = []
+
+    for item in data_dict.items():
+        data_dict_transfer.append(item)
+
+    data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
+    data_dict_transfer = data_dict_transfer[0:6]
+
+    for item in data_dict_transfer:
+        chart_labels.append(item[0])
+
+    for item in data_dict_transfer:
+        chart_data.append(item[1])
+
+    all_data = []
+    all_data.append(chart_labels)
+    all_data.append(chart_data)
+
+    return jsonify(all_data)
+
+
+@app.route('/chart-data-manager')
+def get_manager_chart_data():
+    """ """
+
+    data_dict = get_chart_manager()
+
+    chart_labels = []
+    chart_data = []
+    data_dict_transfer = []
+
+    for item in data_dict.items():
+        data_dict_transfer.append(item)
+
+    data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
+    data_dict_transfer = data_dict_transfer[0:6]
+
+    for item in data_dict_transfer:
+        chart_labels.append(item[0])
+
+    for item in data_dict_transfer:
+        chart_data.append(item[1])
+
+    all_data = []
+    all_data.append(chart_labels)
+    all_data.append(chart_data)
+
+    return jsonify(all_data)
+
+########### HELPER FUNCTIONS
+
+
+def get_chart_employee():
+    """Get data for Chart.js bar graph."""
+
+    has_pop = db.session.query(
+        CitizenGroup.location_id,
+        CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
+
+    # ALL EMPLOYED PERSONS
+    f_data = has_pop.filter_by(female=True, manager=False).all()
+    f_data_np = np.array(f_data)
+    f_pop = f_data_np[:, 1]
+    m_data = has_pop.filter_by(female=False, manager=False).all()
+    m_data_np = np.array(m_data)
+    m_pop = m_data_np[:, 1]
+    total_pop = f_pop + m_pop
+
+    final_data = np.column_stack((f_data_np[:, 0], (f_pop/total_pop)))
+    final_data = final_data.tolist()
+
+    data_dict = {}
+
+    for i in range(len(final_data)):
+        data_dict[int(final_data[i][0])] = final_data[i][1]
+
+    return data_dict
+
+
+def get_chart_manager():
+    """Get data for Chart.js bar graph."""
+
+    has_pop = db.session.query(
+        CitizenGroup.location_id,
+        CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
+
+    # ALL EMPLOYED PERSONS
+    f_data = has_pop.filter_by(female=True, manager=True).all()
+    f_data_np = np.array(f_data)
+    f_pop = f_data_np[:, 1]
+    m_data = has_pop.filter_by(female=False, manager=True).all()
+    m_data_np = np.array(m_data)
+    m_pop = m_data_np[:, 1]
+    total_pop = f_pop + m_pop
+
+    final_data = np.column_stack((f_data_np[:, 0], (f_pop/total_pop)))
+    final_data = final_data.tolist()
+
+    data_dict = {}
+
+    for i in range(len(final_data)):
+        data_dict[int(final_data[i][0])] = final_data[i][1]
+
+    return data_dict
 
 if __name__ == "__main__":
 
