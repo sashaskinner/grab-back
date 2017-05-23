@@ -37,7 +37,7 @@
         stroke-width: 1.25px;
       }
 
-      #district-rank {
+      #graph-container {
         float: right;
         margin-top: 110px;
         margin-right: 20px;
@@ -71,11 +71,19 @@
 
           <button type="submit" onclick="womenManagersData()">
             Managers (% Women)</button>
+
+          <button type="submit" onclick="womenEmployeesDataReverse()">Lowest 5 for Employees
+          </button>
+
+          <button type="submit" onclick="womenManagersDataReverse()">Lowest 5 for Managers
+          </button>
       </div>
 
     
     <!-- canvas for chart with top/bottom 5 % female employees -->
+    <div id="graph-container">
     <canvas id="district-rank" width="300" height="300"></canvas>
+    </div>
 
 
     <!-- begin d3 visualization -->
@@ -161,17 +169,38 @@
       
         d3.select(self.frameElement).style("height", height + "px");
 
-
-        create_rank_chart_manager();
-
       } // end ready
 
+      createRankChartManager();
 
   // populate map with data showing % women employed overall by district
   function womenEmployeesData() {
   
     //draw chartjs chart
-    create_rank_chart_employee();
+
+    $("#district-rank").remove();
+    $("#graph-container").append("<canvas id='district-rank' width=300, height=300></canvas>");
+    var ctx = $("#district-rank")
+    createRankChartEmployee();
+    
+    var minimum = 0.33,
+        maximum = 0.52;
+
+      queue()
+      .defer(d3.json, "/us.json")
+      .defer(d3.json, "/us-congress-113.json")
+      .defer(d3.json, "/district-employee-info.json")
+      .await(ready);
+
+  } // end womenEmployeesData
+
+  function womenEmployeesDataReverse() {
+  
+    //draw chartjs chart
+
+    $("#district-rank").remove();
+    $("#graph-container").append("<canvas id='district-rank' width=300, height=300></canvas>");
+    createReverseChartEmployee();
     
     var minimum = 0.33,
         maximum = 0.52;
@@ -189,7 +218,30 @@
   function womenManagersData() {
         
         // draw chartjs chart
-        create_rank_chart_manager();
+        $("#district-rank").remove();
+        $("#graph-container").append("<canvas id='district-rank' width=300, height=300></canvas>");
+        var ctx = $("#district-rank")
+        createRankChartManager();
+
+        var minimum = 0.28,
+            maximum = 0.62;
+
+        queue()
+        .defer(d3.json, "/us.json")
+        .defer(d3.json, "/us-congress-113.json")
+        .defer(d3.json, "/district-manager-info.json")
+        .await(ready);
+        // debugger
+
+  } // end womenManagersData
+
+  function womenManagersDataReverse() {
+        
+        // draw chartjs chart
+        $("#district-rank").remove();
+        $("#graph-container").append("<canvas id='district-rank' width=300, height=300</canvas>");
+        var ctx = $("#district-rank")
+        createReverseChartManager();
 
         var minimum = 0.28,
             maximum = 0.62;
@@ -205,7 +257,7 @@
 
 
   // create bar chart
-  function create_rank_chart_employee() {
+  function createRankChartEmployee() {
       var ctx = $("#district-rank");
       
       $.get("/chart-data-employee", function (results) {
@@ -221,14 +273,43 @@
           type: 'bar',
           data: data,
           options: {
-              responsive: false
-          }
+              responsive: false,
+              title: {
+                  display: true,
+                  text: 'Districts With Highest % Female Employees'
+                }}
+              });
       })
-      }); // end callback function & ajax request
-    } // end create_rank_chart_employee
+    };
 
 
-  function create_rank_chart_manager() {
+  function createReverseChartEmployee() {
+      var ctx = $("#district-rank");
+      
+      $.get("/chart-data-employee-reverse", function (results) {
+        var data = {
+          labels: results[0],
+          datasets: [
+          {
+            data: results[1],
+          }]
+        };
+
+        var districtRankChart = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: {
+              responsive: false,
+              title: {
+                  display: true,
+                  text: 'Districts With Lowest % Female Employees'
+                }}
+              });
+      })
+    };
+
+
+  function createRankChartManager() {
       var ctx = $("#district-rank");
       
       $.get("/chart-data-manager", function (results) {
@@ -244,11 +325,39 @@
           type: 'bar',
           data: data,
           options: {
-              responsive: false
-          }
+              responsive: false,
+              title: {
+                  display: true,
+                  text: 'Districts With Highest % Female Employees in Management'
+                }}
+              });
       })
-      }); // end callback function & ajax request
-    } // end create_rank_chart_employee
+    };
+  
+  function createReverseChartManager() {
+      var ctx = $("#district-rank");
+
+      $.get("/chart-data-manager-reverse", function (results) {
+        var data = {
+          labels: results[0],
+          datasets: [
+          {
+            data: results[1],
+          }]
+        };
+
+        var districtRankChart = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: {
+              responsive: false,
+              title: {
+                  display: true,
+                  text: 'Districts With Lowest % Female Employees in Management'
+                }}
+              });
+      })
+    };
 
     </script>
 

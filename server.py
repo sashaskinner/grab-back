@@ -221,6 +221,35 @@ def get_chart_data_employee():
     return jsonify(all_data)
 
 
+@app.route('/chart-data-employee-reverse')
+def get_reverse_data_employee():
+    """Get data from db query to populate bottom districts chart. """
+
+    data_dict = get_chart_employee()
+
+    chart_labels = []
+    chart_data = []
+    data_dict_transfer = []
+
+    for item in data_dict.items():
+        data_dict_transfer.append(item)
+
+    data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
+    data_dict_transfer = data_dict_transfer[0:6]
+
+    for item in data_dict_transfer:
+        chart_labels.append(item[0])
+
+    for item in data_dict_transfer:
+        chart_data.append(item[1])
+
+    all_data = []
+    all_data.append(chart_labels)
+    all_data.append(chart_data)
+
+    return jsonify(all_data)
+
+
 @app.route('/chart-data-manager')
 def get_chart_data_manager():
     """Get data from db query to populate chart. """
@@ -250,11 +279,39 @@ def get_chart_data_manager():
     return jsonify(all_data)
 
 
+@app.route('/chart-data-manager-reverse')
+def get_reverse_data_manager():
+    """Get data from db query to populate bottom districts chart. """
+
+    data_dict = get_chart_manager()
+
+    chart_labels = []
+    chart_data = []
+    data_dict_transfer = []
+
+    for item in data_dict.items():
+        data_dict_transfer.append(item)
+
+    data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
+    data_dict_transfer = data_dict_transfer[0:6]
+
+    for item in data_dict_transfer:
+        chart_labels.append(item[0])
+
+    for item in data_dict_transfer:
+        chart_data.append(item[1])
+
+    all_data = []
+    all_data.append(chart_labels)
+    all_data.append(chart_data)
+
+    return jsonify(all_data)
+
+
 ########### HELPER FUNCTIONS
 
 def get_chart_employee():
-    """Get top 5 counties data for Chart.js bar graph."""
-
+    """   """
     has_pop = db.session.query(
         CitizenGroup.location_id,
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
@@ -276,13 +333,11 @@ def get_chart_employee():
     for i in range(len(final_data)):
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
-    data_dict_employee = data_dict
-
-    return data_dict_employee
+    return data_dict
 
 
 def get_chart_manager():
-    """Get data for Chart.js bar graph."""
+    """Get manager data for Chart.js bar graph."""
 
     has_pop = db.session.query(
         CitizenGroup.location_id,
@@ -305,9 +360,7 @@ def get_chart_manager():
     for i in range(len(final_data)):
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
-    data_dict_manager = data_dict
-
-    return data_dict_manager
+    return data_dict
 
 
 if __name__ == "__main__":
