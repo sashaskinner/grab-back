@@ -27,28 +27,6 @@ def index():
     return render_template("home.html")
 
 
-@app.route('/us-map')
-def one_map():
-    """Route displaying single U.S. map."""
-
-    return render_template("base.html")
-
-
-    # query for population information
-    # query for location & zipcode information
-    # query for election information
-
-
-@app.route('/two-maps')
-def two_maps():
-    """Route displaying two side-by-side U.S. maps."""
-    pass
-
-    # query for population information
-    # query for location & zipcode information
-    # query for election information
-
-
 @app.route('/us.json')
 def us_json():
     """JSON file with US map specs."""
@@ -215,8 +193,8 @@ def get_congress_info():
 
 
 @app.route('/chart-data-employee')
-def get_employee_chart_data():
-    """ """
+def get_chart_data_employee():
+    """Get data from db query to populate chart. """
 
     data_dict = get_chart_employee()
 
@@ -244,8 +222,8 @@ def get_employee_chart_data():
 
 
 @app.route('/chart-data-manager')
-def get_manager_chart_data():
-    """ """
+def get_chart_data_manager():
+    """Get data from db query to populate chart. """
 
     data_dict = get_chart_manager()
 
@@ -271,11 +249,11 @@ def get_manager_chart_data():
 
     return jsonify(all_data)
 
+
 ########### HELPER FUNCTIONS
 
-
 def get_chart_employee():
-    """Get data for Chart.js bar graph."""
+    """Get top 5 counties data for Chart.js bar graph."""
 
     has_pop = db.session.query(
         CitizenGroup.location_id,
@@ -298,7 +276,9 @@ def get_chart_employee():
     for i in range(len(final_data)):
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
-    return data_dict
+    data_dict_employee = data_dict
+
+    return data_dict_employee
 
 
 def get_chart_manager():
@@ -325,7 +305,10 @@ def get_chart_manager():
     for i in range(len(final_data)):
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
-    return data_dict
+    data_dict_manager = data_dict
+
+    return data_dict_manager
+
 
 if __name__ == "__main__":
 

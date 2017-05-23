@@ -1,49 +1,48 @@
 <!DOCTYPE html>
 <head>
     <title>Home</title>
-    
     <meta charset="utf-8">
     <style>
 
-    path {
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
+      path {
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
 
-    svg {
-      display: block;
-      margin-left: auto;
-      margin-right: 45%;
-    }
+      svg {
+        display: block;
+        margin-left: auto;
+        margin-right: 45%;
+      }
 
-    .districts {
-      fill: #bbb;
-    }
+      .districts {
+        fill: #bbb;
+      }
 
-    .districts :hover {
-      fill: #e11a88;
-    }
+      .districts :hover {
+        fill: #e11a88;
+      }
 
-    .district-boundaries {
-      pointer-events: none;
-      fill: none;
-      stroke: #fff;
-      stroke-width: .5px;
-    }
+      .district-boundaries {
+        pointer-events: none;
+        fill: none;
+        stroke: #fff;
+        stroke-width: .5px;
+      }
 
-    .state-boundaries {
-      pointer-events: none;
-      fill: none;
-      stroke: #fff;
-      stroke-width: 1.25px;
-    }
+      .state-boundaries {
+        pointer-events: none;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 1.25px;
+      }
 
-    #district-rank {
-      float: right;
-      margin-top: 110px;
-      margin-right: 20px;
-      padding: 10px;
-    }
+      #district-rank {
+        float: right;
+        margin-top: 110px;
+        margin-right: 20px;
+        padding: 10px;
+      }
 
     </style>
 
@@ -65,13 +64,17 @@
       <!-- Chart.js -->
       <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
-    <!-- <div> containing buttons to update map data. -->
-    <div id="option">
-      <button type="submit" onclick="womenEmployeesData()"; onclick="create_rank_chart_employee()">All Employees (% Women)</button>
-      <button type="submit" onclick="womenManagersData()"; onclick="create_rank_chart_manager()">Managers (% Women)</button>
-    </div>
+      <!-- <div> containing buttons to update map data. -->
+      <div id="option">
+          <button type="submit" onclick="womenEmployeesData()">
+            All Employees (% Women)</button>
 
-    <!-- chart ranking % women employees/managers per congressional district -->
+          <button type="submit" onclick="womenManagersData()">
+            Managers (% Women)</button>
+      </div>
+
+    
+    <!-- canvas for chart with top/bottom 5 % female employees -->
     <canvas id="district-rank" width="300" height="300"></canvas>
 
 
@@ -158,14 +161,18 @@
       
         d3.select(self.frameElement).style("height", height + "px");
 
-    create_rank_chart_manager();
+
+        create_rank_chart_manager();
 
       } // end ready
 
 
   // populate map with data showing % women employed overall by district
   function womenEmployeesData() {
-
+  
+    //draw chartjs chart
+    create_rank_chart_employee();
+    
     var minimum = 0.33,
         maximum = 0.52;
 
@@ -175,12 +182,14 @@
       .defer(d3.json, "/district-employee-info.json")
       .await(ready);
 
-      ready(error, us, congress, district);
   } // end womenEmployeesData
 
 
   // populate map with data showing % women employed in management positions by district
   function womenManagersData() {
+        
+        // draw chartjs chart
+        create_rank_chart_manager();
 
         var minimum = 0.28,
             maximum = 0.62;
@@ -190,8 +199,7 @@
         .defer(d3.json, "/us-congress-113.json")
         .defer(d3.json, "/district-manager-info.json")
         .await(ready);
-
-        ready(error, us, congress, district);
+        // debugger
 
   } // end womenManagersData
 
@@ -217,7 +225,8 @@
           }
       })
       }); // end callback function & ajax request
-    } // end create_rank_chart
+    } // end create_rank_chart_employee
+
 
   function create_rank_chart_manager() {
       var ctx = $("#district-rank");
@@ -239,7 +248,7 @@
           }
       })
       }); // end callback function & ajax request
-    } // end create_rank_chart
+    } // end create_rank_chart_employee
 
     </script>
 
