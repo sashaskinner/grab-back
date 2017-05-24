@@ -208,8 +208,15 @@ def get_chart_data_employee():
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
     data_dict_transfer = data_dict_transfer[0:6]
 
+    chart_labels = []
+
     for item in data_dict_transfer:
-        chart_labels.append(item[0])
+        loc_id = item[0]
+        label_info = db.session.query(Location.state_name,
+                                      Location.district_id).filter_by(location_id=loc_id).first()
+
+        new_label = str(label_info[0]) + ", District " + str(label_info[1])
+        chart_labels.append(new_label)
 
     for item in data_dict_transfer:
         chart_data.append(item[1])
@@ -237,8 +244,15 @@ def get_reverse_data_employee():
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
     data_dict_transfer = data_dict_transfer[0:6]
 
+    chart_labels = []
+
     for item in data_dict_transfer:
-        chart_labels.append(item[0])
+        loc_id = item[0]
+        label_info = db.session.query(Location.state_name,
+                                      Location.district_id).filter_by(location_id=loc_id).first()
+
+        new_label = str(label_info[0]) + ", District " + str(label_info[1])
+        chart_labels.append(new_label)
 
     for item in data_dict_transfer:
         chart_data.append(item[1])
@@ -266,8 +280,15 @@ def get_chart_data_manager():
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
     data_dict_transfer = data_dict_transfer[0:6]
 
+    chart_labels = []
+
     for item in data_dict_transfer:
-        chart_labels.append(item[0])
+        loc_id = item[0]
+        label_info = db.session.query(Location.state_name,
+                                      Location.district_id).filter_by(location_id=loc_id).first()
+
+        new_label = str(label_info[0]) + ", District " + str(label_info[1])
+        chart_labels.append(new_label)
 
     for item in data_dict_transfer:
         chart_data.append(item[1])
@@ -295,8 +316,15 @@ def get_reverse_data_manager():
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
     data_dict_transfer = data_dict_transfer[0:6]
 
+    chart_labels = []
+
     for item in data_dict_transfer:
-        chart_labels.append(item[0])
+        loc_id = item[0]
+        label_info = db.session.query(Location.state_name,
+                                      Location.district_id).filter_by(location_id=loc_id).first()
+
+        new_label = str(label_info[0]) + ", District " + str(label_info[1])
+        chart_labels.append(new_label)
 
     for item in data_dict_transfer:
         chart_data.append(item[1])
@@ -340,6 +368,16 @@ def get_district_from_zipcode():
 
 ########### HELPER FUNCTIONS
 
+def get_location_details():
+    """Get state name and district ID for a location ID. """
+
+    location_deets = db.session.query(
+        CitizenGroup.location_id,
+        CitizenGroup.state_name,
+        CitizenGroup.district_id).filter(CitizenGroup.population.isnot(None))
+
+
+
 
 def get_chart_employee():
     """   """
@@ -347,7 +385,7 @@ def get_chart_employee():
         CitizenGroup.location_id,
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
 
-    # ALL EMPLOYED PERSONS
+    # ALL EMPLOYED PERSONS POPULATION & DISTRICT INFO
     f_data = has_pop.filter_by(female=True, manager=False).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
