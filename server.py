@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, redirect, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 import os
@@ -308,7 +308,38 @@ def get_reverse_data_manager():
     return jsonify(all_data)
 
 
+########### ZIPCODE LOOKUP QUERIES & ROUTES
+
+@app.route('/zipcode-lookup.json', methods=['GET'])
+def get_district_from_zipcode():
+    """Get location_id from zipcode entry."""
+
+    z = request.args.get("zipcode-entry")
+    z = int(z)
+
+    lookup_id = db.session.query(Zipcode.location_id).filter_by(zipcode=z).first()
+    district_lookup = db.session.query(Zipcode.state_name, Zipcode.district_id).filter_by(zipcode=z).first()
+
+    lookup_state = str(district_lookup[0])
+    lookup_dist = int(district_lookup[1])
+
+    data_dict = get_chart_employee()
+
+    # convert SQLAlchemy search result to int
+    lookup_id = np.array(lookup_id)
+    lookup_id = lookup_id[0]
+    lookup_id = int(lookup_id)
+
+    lookup_percent = data_dict[lookup_id] * 100
+
+    lookup_percent = str(lookup_percent) + '%'
+
+    return jsonify({'lookup_id': lookup_id, 'lookup_percent': lookup_percent,
+                    'lookup_state': lookup_state, 'lookup_dist': lookup_dist})
+
+
 ########### HELPER FUNCTIONS
+
 
 def get_chart_employee():
     """   """

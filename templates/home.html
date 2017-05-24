@@ -85,6 +85,40 @@
     <canvas id="district-rank" width="300" height="300"></canvas>
     </div>
 
+    <!-- input form for zipcode lookup add button -->
+    <br>
+    <form id="zipcode-form" action="/zipcode-lookup.json">
+    Find District by Zipcode: 
+    <input id="zipcode-entry" type="text" name="zipcode-entry">
+    <input type="submit" value="Submit">
+    </form>
+
+    <p id="display-zip-result"></p>
+    <p id="display-percent-result"></p>
+
+    <script type="text/javascript">
+
+      function zipcodeLookup(results) {
+          console.log(results);
+          var zip = results;
+          $("#display-zip-result").html("This zipcode is in " + results.lookup_state + 
+                                        " district number " + results.lookup_dist + ".")
+          $("#display-percent-result").html("% employed persons women: " + 
+                                            results.lookup_percent);
+         
+          console.log("***finished zipcodeLookup***");
+      }
+
+      function getDistrictId(evt) {
+          evt.preventDefault();
+          var zipcode = $("#zipcode-entry").val();
+          $.get("/zipcode-lookup.json",{"zipcode-entry":zipcode}, zipcodeLookup);
+          console.log("***finished AJAX request***");
+      }
+
+      $("#zipcode-form").submit(getDistrictId);
+
+    </script>
 
     <!-- begin d3 visualization -->
     <script type="text/javascript">
