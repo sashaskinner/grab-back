@@ -219,7 +219,10 @@ def get_chart_data_employee():
         chart_labels.append(new_label)
 
     for item in data_dict_transfer:
-        chart_data.append(item[1])
+        new_item = item[1] * 100
+        new_item = str(new_item)
+        new_item = new_item[0:5]
+        chart_data.append(float(new_item))
 
     all_data = []
     all_data.append(chart_labels)
@@ -255,7 +258,10 @@ def get_reverse_data_employee():
         chart_labels.append(new_label)
 
     for item in data_dict_transfer:
-        chart_data.append(item[1])
+        new_item = item[1] * 100
+        new_item = str(new_item)
+        new_item = new_item[0:5]
+        chart_data.append(float(new_item))
 
     all_data = []
     all_data.append(chart_labels)
@@ -291,7 +297,10 @@ def get_chart_data_manager():
         chart_labels.append(new_label)
 
     for item in data_dict_transfer:
-        chart_data.append(item[1])
+        new_item = item[1] * 100
+        new_item = str(new_item)
+        new_item = new_item[0:5]
+        chart_data.append(float(new_item))
 
     all_data = []
     all_data.append(chart_labels)
@@ -327,7 +336,10 @@ def get_reverse_data_manager():
         chart_labels.append(new_label)
 
     for item in data_dict_transfer:
-        chart_data.append(item[1])
+        new_item = item[1] * 100
+        new_item = str(new_item)
+        new_item = new_item[0:5]
+        chart_data.append(float(new_item))
 
     all_data = []
     all_data.append(chart_labels)
@@ -367,16 +379,6 @@ def get_district_from_zipcode():
 
 
 ########### HELPER FUNCTIONS
-
-def get_location_details():
-    """Get state name and district ID for a location ID. """
-
-    location_deets = db.session.query(
-        CitizenGroup.location_id,
-        CitizenGroup.state_name,
-        CitizenGroup.district_id).filter(CitizenGroup.population.isnot(None))
-
-
 
 
 def get_chart_employee():
