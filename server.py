@@ -8,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 import os
 import json
 import numpy as np
+from sqlalchemy import func
 
 from model import Location, CitizenGroup, ElectedRep, Zipcode, connect_to_db, db
 
@@ -197,6 +198,7 @@ def get_chart_data_employee():
     """Get data from db query to populate chart. """
 
     data_dict = get_chart_employee()
+    us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
 
     chart_labels = []
     chart_data = []
@@ -226,7 +228,9 @@ def get_chart_data_employee():
 
     all_data = []
     all_data.append(chart_labels)
+    all_data[0].append("U.S. Average")
     all_data.append(chart_data)
+    all_data[1].append(float(us_emp_avg))
 
     return jsonify(all_data)
 
@@ -236,6 +240,8 @@ def get_reverse_data_employee():
     """Get data from db query to populate bottom districts chart. """
 
     data_dict = get_chart_employee()
+    us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
+
 
     chart_labels = []
     chart_data = []
@@ -265,7 +271,9 @@ def get_reverse_data_employee():
 
     all_data = []
     all_data.append(chart_labels)
+    all_data[0].append("U.S. Average")
     all_data.append(chart_data)
+    all_data[1].append(float(us_emp_avg))
 
     return jsonify(all_data)
 
@@ -275,6 +283,7 @@ def get_chart_data_manager():
     """Get data from db query to populate chart. """
 
     data_dict = get_chart_manager()
+    us_manager_avg = '{:.2f}'.format(get_us_manager_average() * 100)
 
     chart_labels = []
     chart_data = []
@@ -304,7 +313,9 @@ def get_chart_data_manager():
 
     all_data = []
     all_data.append(chart_labels)
+    all_data[0].append("U.S. Average")
     all_data.append(chart_data)
+    all_data[1].append(float(us_manager_avg))
 
     return jsonify(all_data)
 
@@ -314,6 +325,7 @@ def get_reverse_data_manager():
     """Get data from db query to populate bottom districts chart. """
 
     data_dict = get_chart_manager()
+    us_manager_avg = '{:.2f}'.format(get_us_manager_average() * 100)
 
     chart_labels = []
     chart_data = []
@@ -343,7 +355,9 @@ def get_reverse_data_manager():
 
     all_data = []
     all_data.append(chart_labels)
+    all_data[0].append("U.S. Average")
     all_data.append(chart_data)
+    all_data[1].append(float(us_manager_avg))
 
     return jsonify(all_data)
 
@@ -370,12 +384,58 @@ def get_district_from_zipcode():
     lookup_id = lookup_id[0]
     lookup_id = int(lookup_id)
 
-    lookup_percent = data_dict[lookup_id] * 100
+    lookup_percent = '{:.2f}'.format((data_dict[lookup_id] * 100))
 
-    lookup_percent = str(lookup_percent) + '%'
+    # lookup_percent = str(lookup_percent) + '%'
 
-    return jsonify({'lookup_id': lookup_id, 'lookup_percent': lookup_percent,
-                    'lookup_state': lookup_state, 'lookup_dist': lookup_dist})
+    # now lookup state averages for all & for managers
+    all_state_lookup = db.session.query(func.sum(CitizenGroup.population).label(
+        'average')).filter_by(manager=False,
+                              state_name=lookup_state).all()
+
+    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label(
+        'average')).filter_by(manager=False,
+                              female=True,
+                              state_name=lookup_state).all()
+
+    state_emp_avg = all_lookup_women[0][0]/all_state_lookup[0][0]
+    state_emp_percent = '{:.2f}'.format(state_emp_avg * 100)
+
+
+    # managers
+    manager_district_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=True,
+                              state_name=lookup_state).all()
+
+    manager_women_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=True,
+                              female=True,
+                              state_name=lookup_state).all()
+
+    state_manager_avg = manager_women_lookup[0][0]/manager_district_lookup[0][0]
+    state_manager_percent = '{:.2f}'.format(state_manager_avg * 100)
+
+    # all us averages
+    us_emp_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=False).all()
+
+    us_women_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=False, female=True).all()
+
+    us_emp_avg = us_women_lookup[0][0]/us_emp_lookup[0][0]
+    us_emp_percent = '{:.2f}'.format(us_emp_avg * 100)
+
+    return jsonify({'lookup_id': lookup_id,
+                    'lookup_percent': lookup_percent,
+                    'lookup_state': lookup_state,
+                    'lookup_dist': lookup_dist,
+                    'state_emp_avg': state_emp_percent,
+                    'state_manager_avg': state_manager_percent,
+                    'us_emp_avg': us_emp_percent})
 
 
 ########### HELPER FUNCTIONS
@@ -432,6 +492,48 @@ def get_chart_manager():
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
     return data_dict
+
+
+def get_us_emp_average():
+    """Get US average percentage women"""
+
+    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=False).all()
+    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=False, female=True)
+
+    us_emp_avg = all_lookup_women[0][0]/all_district_lookup[0][0]
+
+    return us_emp_avg
+
+
+def get_us_manager_average():
+    """Get US average percentage women"""
+
+    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True).all()
+    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True, female=True)
+
+    us_manager_avg = all_lookup_women[0][0]/all_district_lookup[0][0]
+
+    return us_manager_avg
+
+
+def get_state_emp_average():
+    """Get US average percentage women"""
+
+
+
+    return us_emp_avg
+
+
+def get_state_manager_average():
+    """Get US average percentage women"""
+
+    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True).all()
+    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True, female=True)
+
+    us_emp_avg = all_lookup_women[0][0]/all_district_lookup[0][0]
+
+    return us_emp_avg
+
 
 
 if __name__ == "__main__":

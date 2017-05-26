@@ -44,6 +44,14 @@
         padding: 10px;
       }
 
+      #option {
+        float: left;
+      }
+
+      tr:nth-child(odd) {
+        background-color: #f2f2f2;
+      }
+
 
     </style>
 
@@ -65,54 +73,112 @@
       <!-- Chart.js -->
       <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     
-    <!-- canvas for chart with top/bottom 5 % female employees -->
-    <div id="graph-container">
-    <canvas id="district-rank" width="450" height="500"></canvas>
-    </div>
-
     <!-- input form for zipcode lookup add button -->
     <div id="zipcode-search">
-    Find District by Zipcode: 
-    <input id="zipcode-entry" type="text" name="zipcode-entry">
-    <input type="submit" value="Go!">
+      Find District by Zipcode: 
+      <input id="zipcode-entry" type="text" name="zipcode-entry">
+      <button id="zipcode-submit" type="submit">Go!</button>
+    </div>
+    
+
+    <br>
+    <div id="zip-table"></div>
+
+<!--     <p id="display-zip-result"></p>
+    <p id="display-percent-result"></p> -->
+
+    <!-- canvas for chart with top/bottom 5 % female employees -->
+    <div id="compare-graph-container">
+    <canvas id="state-us-compare" width="350" height="400"></canvas>
     </div>
 
-    <p id="display-zip-result"></p>
-    <p id="display-percent-result"></p>
+
+    <!-- canvas for chart with top/bottom 5 % female employees -->
+    <div id="graph-container">
+    <canvas id="district-rank" width="350" height="400"></canvas>
+    </div>
 
     <!-- <div> containing buttons to update map data. -->
     <div id="option">
       <button type="submit" onclick="womenEmployeesData()">
-            All Employees (% Women)</button>
+            All Employees (% Women)</button><br>
 
           <button type="submit" onclick="womenManagersData()">
-            Managers (% Women)</button>
+            Managers (% Women)</button><br>
 
           <button type="submit" onclick="womenEmployeesDataReverse()">Lowest 5 for Employees
-          </button>
+          </button><br>
 
           <button type="submit" onclick="womenManagersDataReverse()">Lowest 5 for Managers
-          </button>
+          </button><br>
     </div>
+    <br><br>
 
 
     <script type="text/javascript">
 
       function zipcodeLookup(results) {
+
+          console.log(results);
+
           var zip = results;
-          $("#display-zip-result").html("This zipcode is in " + results.lookup_state + 
-                                        " district number " + results.lookup_dist + ".")
-          $("#display-percent-result").html("% employed persons women: " + 
-                                            results.lookup_percent);
-          }
+          var zipT = 
+              '<table id="zip-results">' +
+              '<tr>' +
+                '<td>State</td>' +
+                '<td id="display-state"></td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td>District ID</td>' +
+                '<td id="display-dist"></td>' +       
+              '</tr>' +
+            '</table>';
+
+          $("#zip-table").append(zipT)
+          $("#display-state").html(results.lookup_state); 
+          $("#display-dist").html(results.lookup_dist);
+
+          var data = [results.lookup_percent, results.state_emp_avg, results.state_manager_avg, results.us_emp_avg];
+          console.log(data);
+
+          $("#state-us-compare").remove();
+          $("#compare-graph-container").append("<canvas id='state-us-compare' width=350, height=400></canvas>");
+          
+          var ctx = $("#state-us-compare");
+
+          var stateUSCompare = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['District', 'State', 'State - Management', 'U.S.'],
+              data: data,
+            options: {
+                responsive: false,
+                title: {
+                    display: true,
+                    text: 'District vs State & US Average'
+                  },
+                scales: {
+                  xAxes: [{
+                    display: true,
+                    ticks: {
+                      min: 0
+                    }
+                  }]
+                }
+                }
+                }
+          });
+
+        }; // end function
+
 
       function getDistrictId(evt) {
           evt.preventDefault();
           var zipcode = $("#zipcode-entry").val();
           $.get("/zipcode-lookup.json",{"zipcode-entry":zipcode}, zipcodeLookup);
-      }
+      };
 
-      $("#zipcode-form").submit(getDistrictId);
+      $("#zipcode-submit").on("click", getDistrictId);
 
     </script>
 
@@ -257,7 +323,7 @@
     //draw chartjs chart
 
     $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=450, height=500></canvas>");
+    $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
     var ctx = $("#district-rank")
     createRankChartEmployee();
     
@@ -277,7 +343,7 @@
     //draw chartjs chart
 
     $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=450, height=500></canvas>");
+    $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
     createReverseChartEmployee();
     
     var minimum = 0.33,
@@ -297,7 +363,7 @@
         
         // draw chartjs chart
         $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=500></canvas>");
+        $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
         var ctx = $("#district-rank")
         createRankChartManager();
 
@@ -317,7 +383,7 @@
         
         // draw chartjs chart
         $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=500</canvas>");
+        $("#graph-container").append("<canvas id='district-rank' width=350, height=400</canvas>");
         var ctx = $("#district-rank")
         createReverseChartManager();
 
