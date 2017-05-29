@@ -384,7 +384,7 @@ def get_district_from_zipcode():
     lookup_id = lookup_id[0]
     lookup_id = int(lookup_id)
 
-    lookup_percent = '{:.2f}'.format((data_dict[lookup_id] * 100))
+    lookup_percent = '{:.2f}'.format(data_dict[lookup_id]*100)
 
     # lookup_percent = str(lookup_percent) + '%'
 
@@ -400,7 +400,6 @@ def get_district_from_zipcode():
 
     state_emp_avg = all_lookup_women[0][0]/all_state_lookup[0][0]
     state_emp_percent = '{:.2f}'.format(state_emp_avg * 100)
-
 
     # managers
     manager_district_lookup = db.session.query(func.sum(

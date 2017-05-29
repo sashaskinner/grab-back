@@ -15,6 +15,11 @@
         margin-right: 45%;
       }
 
+      .background {
+        fill: none;
+        pointer-events: all;
+      }
+
       .districts {
         fill: #bbb;
       }
@@ -59,6 +64,9 @@
 
   <body>
 
+      <!-- Links to my static files -->
+      <script type="static/js/d3-map.js"></script>
+
       <!-- JQuery -->
       <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -88,12 +96,6 @@
     <p id="display-percent-result"></p> -->
 
     <!-- canvas for chart with top/bottom 5 % female employees -->
-    <div id="compare-graph-container">
-    <canvas id="state-us-compare" width="350" height="400"></canvas>
-    </div>
-
-
-    <!-- canvas for chart with top/bottom 5 % female employees -->
     <div id="graph-container">
     <canvas id="district-rank" width="350" height="400"></canvas>
     </div>
@@ -114,62 +116,47 @@
     </div>
     <br><br>
 
-
     <script type="text/javascript">
 
       function zipcodeLookup(results) {
 
-          console.log(results);
+        console.log(results);
 
-          var zip = results;
-          var zipT = 
-              '<table id="zip-results">' +
-              '<tr>' +
-                '<td>State</td>' +
-                '<td id="display-state"></td>' +
-              '</tr>' +
-              '<tr>' +
-                '<td>District ID</td>' +
-                '<td id="display-dist"></td>' +       
-              '</tr>' +
-            '</table>';
+        // clear current chart
+        $("#district-rank").remove();        
+        // assign id for new chart.
+        $("#graph-container").append("<canvas id='district-rank' width=350, height=400</canvas>");
+        var ctx = $("#district-rank");
 
-          $("#zip-table").append(zipT)
-          $("#display-state").html(results.lookup_state); 
-          $("#display-dist").html(results.lookup_dist);
 
-          var data = [results.lookup_percent, results.state_emp_avg, results.state_manager_avg, results.us_emp_avg];
-          console.log(data);
+        // $.get("/zipcode-lookup.json",{"zipcode-entry":zipcode}, function (results) {
 
-          $("#state-us-compare").remove();
-          $("#compare-graph-container").append("<canvas id='state-us-compare' width=350, height=400></canvas>");
-          
-          var ctx = $("#state-us-compare");
+        // var data = [results.lookup_percent, results.state_emp_avg, results.us_emp_avg];
 
-          var stateUSCompare = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: ['District', 'State', 'State - Management', 'U.S.'],
-              data: data,
-            options: {
-                responsive: false,
-                title: {
-                    display: true,
-                    text: 'District vs State & US Average'
-                  },
-                scales: {
-                  xAxes: [{
-                    display: true,
-                    ticks: {
-                      min: 0
-                    }
-                  }]
-                }
-                }
-                }
-          });
+        var data = {
+          labels: ["District No. " + results.lookup_dist,
+                    results.lookup_state, 
+                    'U.S.'],
+          datasets: [
+          {
+            data: [results.lookup_percent, results.state_emp_avg, results.us_emp_avg]
+          }]
+        };
 
-        }; // end function
+
+        console.log(data);
+
+        var stateUSCompare = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: {
+              responsive: false,
+              title: {
+                  display: true,
+                  text: 'District vs State & US Average'
+                }}});
+
+      }; // end function
 
 
       function getDistrictId(evt) {
@@ -187,18 +174,29 @@
 
         // map
         var width = 960,
-            height = 600;
-        
-        var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            height = 600,
+            centered;
 
         var projection = d3.geoAlbersUsa()
           .scale(1280)
           .translate([width / 2, height / 2]);
 
         var path = d3.geoPath()
-            .projection(projection);
+          .projection(projection);
+        
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        svg.append("rect")
+            .attr("class", "background")
+            .attr("width", width)
+            .attr("height", height)
+            .on("click", clicked);
+
+        var map_g = svg.append("g")
+            .attr("id", "map");
+
 
         // make threshold bar key
         var formatPercent = d3.format(".0%"),
@@ -213,11 +211,11 @@
             .range(["#edf8fb", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", 
                     "#238b45", "#005824"]);
 
-        var g = svg.append("g")
-            .attr("class", "key")
-            .attr("transform", "translate(550, 15)");
+        var key_g = svg.append("g")
+            .attr("id", "key")
+            .attr("transform", "translate(600, 15)");
 
-        g.selectAll("rect")
+        key_g.selectAll("rect")
           .data(threshold.range().map(function(color) {
             var d = threshold.invertExtent(color);
             if (d[0] == null) d[0] = x.domain()[0];
@@ -230,7 +228,7 @@
             .attr("width", function(d) { return x(d[1]) - x(d[0]); })
             .attr("fill", function(d) { return threshold(d[0]); });
 
-        g.append("text")
+        key_g.append("text")
             .attr("class", "caption")
             .attr("x", x.range()[0])
             .attr("y", -6)
@@ -239,7 +237,7 @@
             .attr("text-anchor", "start")
             .text("% Women");
 
-        g.call(d3.axisBottom(x)
+        key_g.call(d3.axisBottom(x)
               .tickSize(13)
               .tickFormat(function(x, i) { return x*100 + "%"; })
               .tickValues(threshold.domain()))
@@ -256,7 +254,34 @@
 
     var color = d3.scaleLinear().domain([0.20, 0.30, 0.40, 0.50, 0.60, 0.70])
                 .range(["#edf8fb", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", 
-                        "#238b45", "#005824"]);    
+                        "#238b45", "#005824"]);   
+
+    // zoom function
+
+    function clicked(d) {
+        var x, y, k;
+
+        if (d && centered !== d) {
+          var centroid = path.centroid(d);
+          x = centroid[0];
+          y = centroid[1];
+          k = 4;
+          centered = d;
+        } else {
+          x = width / 2;
+          y = height / 2;
+          k = 1;
+          centered = null;
+        }
+
+        map_g.selectAll("path")
+            .classed("active", centered && function(d) { return d === centered; });
+
+        map_g.transition()
+            .duration(750)
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+            .style("stroke-width", 1.5 / k + "px");
+    } 
 
     // load data
     queue()
@@ -269,18 +294,18 @@
     function ready(error, us, congress, district) {
       if (error) throw error;
 
-      svg.append("defs").append("path")
+      map_g.append("defs").append("path")
           .attr("id", "land")
           .datum(topojson.feature(us, us.objects.land))
           .attr("d", path);
 
-      svg.append("clipPath")
+      map_g.append("clipPath")
           .attr("id", "clip-land")
         .append("use")
           .attr("xlink:href", "#land");
           
       // congressional districts
-      svg.append("g")
+      map_g.append("g")
           .attr("class", "districts")
           .attr("clip-path", "url(#clip-land)")
           .selectAll("path")
@@ -293,19 +318,20 @@
             else {
               return "#F2F3F4"; }
           })
+          .on("click", clicked)
 
         // show congressional district id on hover
         .append("title")
           .text(function(d) { return d.id; });
 
       // draw district & state boundaries
-      svg.append("path")
+      map_g.append("path")
           .attr("class", "district-boundaries")
           .datum(topojson.mesh(congress, congress.objects.districts,
             function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))
           .attr("d", path);
 
-      svg.append("path")
+      map_g.append("path")
           .attr("class", "state-boundaries")
           .datum(topojson.mesh(us, us.objects.states,
             function(a, b) { return a !== b; }))
