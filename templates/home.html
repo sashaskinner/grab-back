@@ -81,6 +81,11 @@
       <!-- Chart.js -->
       <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     
+    <div>
+      <input id="year" type="range" min="2014" max="2015">
+    </div>
+
+
     <!-- input form for zipcode lookup add button -->
     <div id="zipcode-search">
       Find District by Zipcode: 
@@ -90,14 +95,12 @@
     
 
     <br>
-    <div id="zip-table"></div>
-
 <!--     <p id="display-zip-result"></p>
     <p id="display-percent-result"></p> -->
 
     <!-- canvas for chart with top/bottom 5 % female employees -->
     <div id="graph-container">
-    <canvas id="district-rank" width="350" height="400"></canvas>
+    <canvas id="district-rank" width="550" height="500"></canvas>
     </div>
 
     <!-- <div> containing buttons to update map data. -->
@@ -125,7 +128,7 @@
         // clear current chart
         $("#district-rank").remove();        
         // assign id for new chart.
-        $("#graph-container").append("<canvas id='district-rank' width=350, height=400</canvas>");
+        $("#graph-container").append("<canvas id='district-rank' width=450, height=500</canvas>");
         var ctx = $("#district-rank");
 
 
@@ -139,7 +142,9 @@
                     'U.S.'],
           datasets: [
           {
-            data: [results.lookup_percent, results.state_emp_avg, results.us_emp_avg]
+            data: [results.lookup_percent, results.state_emp_avg, results.us_emp_avg],
+            backgroundColor: ['#c6dbef','#6baed6','#08306b']
+
           }]
         };
 
@@ -174,7 +179,7 @@
 
         // map
         var width = 960,
-            height = 600,
+            height = 700,
             centered;
 
         var projection = d3.geoAlbersUsa()
@@ -203,13 +208,12 @@
             formatNumber = d3.format(".0f");
 
         var x = d3.scaleLinear()
-            .domain([.1, .8])
+            .domain([.1, .7])
             .range([0, 300]);
 
         var threshold = d3.scaleThreshold()
-            .domain([0.20, 0.30, 0.40, 0.50, 0.60, 0.70])
-            .range(["#edf8fb", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", 
-                    "#238b45", "#005824"]);
+            .domain([0.20, 0.30, 0.40, 0.50, 0.60])
+            .range(['#eff3ff','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c']);
 
         var key_g = svg.append("g")
             .attr("id", "key")
@@ -252,10 +256,11 @@
     // var minimumColor = "#edf8fb",
     //     maximumColor = "#005824";
 
-    var color = d3.scaleLinear().domain([0.20, 0.30, 0.40, 0.50, 0.60, 0.70])
-                .range(["#edf8fb", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", 
-                        "#238b45", "#005824"]);   
-
+    var color = d3.scaleLinear().domain([0.20, 0.30, 0.40, 0.50, 0.60])
+                .range(['#eff3ff','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c']);
+                // .range(['#eff3ff','#bdd7e7','#6baed6','#3182bd','#08519c']);
+                // .range(['#edf8e9','#c7e9c0','#7bccc4','#74c476','#41ab5d','#238b45','#005a32']);
+                // .range(['#c7e9c0','#a1d99b','#74c476','#41ab5d','#238b45','#005a32']);   
     // zoom function
 
     function clicked(d) {
@@ -343,13 +348,14 @@
 
       createRankChartManager();
 
+
   // populate map with data showing % women employed overall by district
   function womenEmployeesData() {
   
     //draw chartjs chart
 
     $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
+    $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
     var ctx = $("#district-rank")
     createRankChartEmployee();
     
@@ -369,7 +375,7 @@
     //draw chartjs chart
 
     $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
+    $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
     createReverseChartEmployee();
     
     var minimum = 0.33,
@@ -389,7 +395,7 @@
         
         // draw chartjs chart
         $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=350, height=400></canvas>");
+        $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
         var ctx = $("#district-rank")
         createRankChartManager();
 
@@ -401,7 +407,6 @@
         .defer(d3.json, "/us-congress-113.json")
         .defer(d3.json, "/district-manager-info.json")
         .await(ready);
-        // debugger
 
   } // end womenManagersData
 
@@ -409,7 +414,7 @@
         
         // draw chartjs chart
         $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=350, height=400</canvas>");
+        $("#graph-container").append("<canvas id='district-rank' width=550, height=500</canvas>");
         var ctx = $("#district-rank")
         createReverseChartManager();
 
@@ -436,6 +441,7 @@
           datasets: [
           {
             data: results[1],
+            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
           }]
         };
 
@@ -446,9 +452,12 @@
               responsive: false,
               title: {
                   display: true,
-                  text: 'Districts With Highest % Female Employees'
+                  text: 'Districts With Highest % Female Employees'},
+              legend: {
+                  display: false
+              }
                 }}
-              });
+              );
       })
     };
 
@@ -462,6 +471,7 @@
           datasets: [
           {
             data: results[1],
+            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]            
           }]
         };
 
@@ -472,8 +482,11 @@
               responsive: false,
               title: {
                   display: true,
-                  text: 'Districts With Lowest % Female Employees'
-                }}
+                  text: 'Districts With Lowest % Female Employees'},
+              legend: {
+                  display: false
+              }
+              }
               });
       })
     };
@@ -488,6 +501,7 @@
           datasets: [
           {
             data: results[1],
+            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
           }]
         };
 
@@ -499,7 +513,10 @@
               title: {
                   display: true,
                   text: 'Districts With Highest % Female Employees in Management'
-                }}
+                },
+              legend: {
+                  display: false
+              }}
               });
       })
     };
@@ -513,6 +530,7 @@
           datasets: [
           {
             data: results[1],
+            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
           }]
         };
 
@@ -524,10 +542,28 @@
               title: {
                   display: true,
                   text: 'Districts With Lowest % Female Employees in Management'
-                }}
+                },
+               legend: {
+                  display: false
+              }}
               });
       })
     };
+
+        // was the slider used?
+
+    $("#year").on("change", function () {
+        var yearValue = $("#year").val();
+
+        $.get('/district-manager-info.json', { 'year': yearValue}, function (results) {
+              queue()
+              .defer(d3.json, "/us.json")
+              .defer(d3.json, "/us-congress-113.json")
+              .defer(d3.json, "/district-manager-info.json")
+              .await(ready);
+        });
+    });
+
 
     </script>
 

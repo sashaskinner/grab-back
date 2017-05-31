@@ -55,7 +55,7 @@ def load_citizen_groups():
     # we won't be trying to add duplicate users
     CitizenGroup.query.delete()
 
-    with file('seed_data/citizens.csv', 'rb') as f:
+    with file('seed_data/citizens-2014.csv', 'rb') as f:
         reader = csv.reader(f)
         citizens_list = list(reader)
         del citizens_list[0]
@@ -63,7 +63,7 @@ def load_citizen_groups():
     # Read location list and insert data
     for row in citizens_list:
 
-        group_id, female, manager, population, district_id, state_name = row
+        group_id, female, manager, population, district_id, state_name, year = row
 
         q = db.session.query(Location.location_id).filter_by(district_id=district_id,
                                                              state_name=state_name).one()
@@ -75,6 +75,7 @@ def load_citizen_groups():
                                population=None,
                                district_id=district_id,
                                state_name=state_name,
+                               year=year,
                                location_id=q)
 
         else:
@@ -84,6 +85,7 @@ def load_citizen_groups():
                                population=population,
                                district_id=district_id,
                                state_name=state_name,
+                               year=year,
                                location_id=q)
 
         # We need to add to the session or it won't ever be stored
@@ -151,11 +153,11 @@ def load_zipcodes():
 if __name__ == "__main__":
     connect_to_db(app)
 
-    # In case tables haven't been created, create them
-    # db.create_all()
+    #In case tables haven't been created, create them
+    db.create_all()
 
-    # # # Import different types of data
-    # load_locations()
-    # load_citizen_groups()
-    # load_elected_reps()
-    # load_zipcodes()
+    # # Import different types of data
+    load_locations()
+    load_citizen_groups()
+    load_elected_reps()
+    load_zipcodes()

@@ -37,6 +37,7 @@ class CitizenGroup(db.Model):
     population = db.Column(db.Float, nullable=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(20), nullable=False)
+    year = db.Column(db.Integer)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
 
     def __repr__(self):

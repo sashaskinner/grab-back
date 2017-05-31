@@ -42,7 +42,7 @@ def us_congress_113():
     return render_template("us-congress-113.json")
 
 
-@app.route('/district-manager-info.json')
+@app.route('/district-manager-info.json', methods=['GET'])
 def get_manager_info():
     """Query db for population info: Management Employees.
 
@@ -50,15 +50,19 @@ def get_manager_info():
 
     """
 
+    y = request.args.get("year", 2015)
+    y = int(y)
+
     has_pop = db.session.query(
         CitizenGroup.location_id,
-        CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
+        CitizenGroup.population, CitizenGroup.year).filter(CitizenGroup.population.isnot(None))
 
     # MANAGERS
-    f_data = has_pop.filter_by(female=True, manager=True).all()
+    f_data = has_pop.filter_by(female=True, manager=True, year=y).all()
+    print f_data
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=True).all()
+    m_data = has_pop.filter_by(female=False, manager=True, year=y).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
@@ -82,6 +86,9 @@ def get_employee_info():
 
     """
 
+    y = request.args.get("year", 2015)
+    y = int(y)
+
     has_pop = db.session.query(
         CitizenGroup.location_id,
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
@@ -104,6 +111,7 @@ def get_employee_info():
         data_dict[int(final_data[i][0])] = final_data[i][1]
 
     return jsonify(data_dict)
+
 
 @app.route('/district-congress-info.json')
 def get_congress_info():
@@ -208,7 +216,7 @@ def get_chart_data_employee():
         data_dict_transfer.append(item)
 
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
-    data_dict_transfer = data_dict_transfer[0:6]
+    data_dict_transfer = data_dict_transfer[0:5]
 
     chart_labels = []
 
@@ -251,7 +259,7 @@ def get_reverse_data_employee():
         data_dict_transfer.append(item)
 
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
-    data_dict_transfer = data_dict_transfer[0:6]
+    data_dict_transfer = data_dict_transfer[0:5]
 
     chart_labels = []
 
@@ -293,7 +301,7 @@ def get_chart_data_manager():
         data_dict_transfer.append(item)
 
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=True)
-    data_dict_transfer = data_dict_transfer[0:6]
+    data_dict_transfer = data_dict_transfer[0:5]
 
     chart_labels = []
 
@@ -335,7 +343,7 @@ def get_reverse_data_manager():
         data_dict_transfer.append(item)
 
     data_dict_transfer = sorted(data_dict_transfer, key=lambda x: x[1], reverse=False)
-    data_dict_transfer = data_dict_transfer[0:6]
+    data_dict_transfer = data_dict_transfer[0:5]
 
     chart_labels = []
 
