@@ -82,7 +82,7 @@
       <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     
     <div>
-      <input id="year" type="range" min="2014" max="2015">
+      <input id="year" type="range" value="2015" min="2014" max="2015">
     </div>
 
 
@@ -104,19 +104,31 @@
     </div>
 
     <!-- <div> containing buttons to update map data. -->
-    <div id="option">
-      <button type="submit" onclick="womenEmployeesData()">
+      <input type="radio" name="empType" id="allEmp">All Employees (% Women)
+      <input type="radio" name="empType" id="manager">Managers (% Women)
+      <input type="radio" name="empType" id="bottomFiveEmp">Lowest 5 % Employees Women
+      <input type="radio" name="empType" id="bottomFiveManager">Lowest 5 % Managers Women
+
+      <script type="text/javascript">
+      $("#allEmp").on("click", function () {
+          console.log("all emps is clicked!");
+      })
+      </script>
+
+
+<!--     <div id="option">
+      <button class="empType" type="submit" onclick="womenEmployeesData()" value="allEmp">
             All Employees (% Women)</button><br>
 
-          <button type="submit" onclick="womenManagersData()">
+          <button class="empType" type="submit" onclick="womenManagersData()" value="manager">
             Managers (% Women)</button><br>
 
-          <button type="submit" onclick="womenEmployeesDataReverse()">Lowest 5 for Employees
+          <button class="empType" type="submit" onclick="womenEmployeesDataReverse()" value="allEmp">Lowest 5 for Employees
           </button><br>
 
-          <button type="submit" onclick="womenManagersDataReverse()">Lowest 5 for Managers
+          <button class="emptype" type="submit" onclick="womenManagersDataReverse()" value="manager">Lowest 5 for Managers
           </button><br>
-    </div>
+    </div> -->
     <br><br>
 
     <script type="text/javascript">
@@ -550,19 +562,75 @@
       })
     };
 
-        // was the slider used?
+    // change data based on button click
+
+
+
+    // was the slider used?
 
     $("#year").on("change", function () {
         var yearValue = $("#year").val();
 
-        $.get('/district-manager-info.json', { 'year': yearValue}, function (results) {
-              queue()
+        if ($("input[type=radio][id=manager]:checked").val() == "on") {
+  
+        queue()
               .defer(d3.json, "/us.json")
               .defer(d3.json, "/us-congress-113.json")
-              .defer(d3.json, "/district-manager-info.json")
+              .defer(d3.json, "/district-manager-info.json?year="+yearValue)
               .await(ready);
-        });
-    });
+
+
+        // $.get('/chart-data-manager', { 'year': yearValue }, function (results) {
+        //       console.log(results);
+      }
+
+      else if ($("input[type=radio][id=allEmp]:checked").val() == "on") {
+        
+        queue()
+              .defer(d3.json, "/us.json")
+              .defer(d3.json, "/us-congress-113.json")
+              .defer(d3.json, "/district-employee-info.json?year="+yearValue)
+              .await(ready);
+
+        function updateRankChartEmployee() {
+
+          $("#district-rank").remove();
+          $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
+          
+          var ctx = $("#district-rank")
+            
+            $.get("/chart-data-employee?year="+yearValue, 
+              function (results) {
+                  var data = {
+                    labels: results[0],
+                    datasets: [
+                    {
+                      data: results[1],
+                      backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
+                    }]
+              };
+
+              var districtRankChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: false,
+                    title: {
+                        display: true,
+                        text: 'Districts With Highest % Female Employees'},
+                    legend: {
+                        display: false
+                    }
+                      }}
+                    );
+            })
+          };
+
+        updateRankChartEmployee();
+
+      }
+
+    })
 
 
     </script>

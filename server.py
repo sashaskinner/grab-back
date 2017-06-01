@@ -59,7 +59,6 @@ def get_manager_info():
 
     # MANAGERS
     f_data = has_pop.filter_by(female=True, manager=True, year=y).all()
-    print f_data
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
     m_data = has_pop.filter_by(female=False, manager=True, year=y).all()
@@ -78,7 +77,7 @@ def get_manager_info():
     return jsonify(data_dict)
 
 
-@app.route('/district-employee-info.json')
+@app.route('/district-employee-info.json', methods=['GET'])
 def get_employee_info():
     """Query db for population info: All Employees.
 
@@ -94,10 +93,10 @@ def get_employee_info():
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
 
     # ALL EMPLOYED PERSONS
-    f_data = has_pop.filter_by(female=True, manager=False).all()
+    f_data = has_pop.filter_by(female=True, manager=False, year=y).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=False).all()
+    m_data = has_pop.filter_by(female=False, manager=False, year=y).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
@@ -113,99 +112,38 @@ def get_employee_info():
     return jsonify(data_dict)
 
 
-@app.route('/district-congress-info.json')
-def get_congress_info():
-    """Query db for population info: Congress Reps
-
-        max-value: 100%, min-value: 0%
-    """
-
-    rep_q = db.session.query(
-        ElectedRep.location_id,
-        ElectedRep.state_name,
-        ElectedRep.rep_type,
-        ElectedRep.female)
-
-    # U.S. CONGRESS REPS
-    all_reps = rep_q.all()
-    all_senate = rep_q.filter_by(rep_type="senate").all()
-    all_house = rep_q.filter_by(rep_type="house").all()
-
-    total_reps = int(rep_q.count())
-    f_reps = int(rep_q.filter_by(female=True).count())
-    m_reps = int(rep_q.filter_by(female=False).count())
-
-    rep_lst = []
-    senate_lst = []
-    house_lst = []
-
-    rep_types = [all_reps, all_senate, all_house]
-    for this_list in rep_types:
-        for item in this_list:
-            item_lst = []
-            for i in range(len(item)):
-                item_lst.append(item[i])
-
-            if this_list == all_reps:
-                rep_lst.append(item_lst)
-                rep_types[0] = rep_lst
-            elif this_list == all_senate:
-                senate_lst.append(item_lst)
-                rep_types[1] = senate_lst
-            elif this_list == all_house:
-                house_lst.append(item_lst)
-                rep_types[2] = house_lst
-
-    for item in senate_lst:
-        if item[3] == True:
-            item[3] = 1
-        else:
-            item[3] = 0
-
-    for item in house_lst:
-        if item[3] == True:
-            item[3] = 1
-        else:
-            item[3] = 0
-
-    # create dict with number all congress members and number female by district
-    district_dict = {}
-    for dist in house_lst:
-        district_dict[dist[0]] = {'women': 0, 'all': 0}
-
-    # add house members to district dict
-    for rep in house_lst:
-        for key in district_dict:
-            if rep[0] == key:
-                district_dict[key]['all'] += 1
-                district_dict[key]['women'] += rep[3]
-
-    # add states to district dict to map senators to districts
-    for item in rep_lst:
-        for key in district_dict:
-            if item[0] == key:
-                district_dict[key]['state'] = item[1]
-
-    # add senators to district dict
-    for rep in senate_lst:
-        for key in district_dict:
-            if rep[1] == district_dict[key]['state']:
-                district_dict[key]['all'] += 1
-                district_dict[key]['women'] += rep[3]
-
-    # create dict to hold dist id and percentage of women us congress reps
-    data_dict = {}
-    for key in district_dict:
-        data_dict[key] = district_dict[key]['women']/float(district_dict[key]['all'])
-
-    return jsonify(data_dict)
-
-
 @app.route('/chart-data-employee')
 def get_chart_data_employee():
     """Get data from db query to populate chart. """
 
-    data_dict = get_chart_employee()
+    y = request.args.get("year", 2014)
+    y = int(y)
+
+    print "#$()*$(#)*$#)(@*$#)(*$#).    " + str(y) + "     $#)*(*#($*#()$*#()$*#)(*$)("
+
+    # has_pop = db.session.query(
+    #     CitizenGroup.location_id,
+    #     CitizenGroup.population,
+    #     CitizenGroup.year).filter(CitizenGroup.population.isnot(None))
+
+    # # ALL EMPLOYED PERSONS POPULATION & DISTRICT INFO
+    # f_data = has_pop.filter_by(female=True, manager=False, year=y).all()
+    # f_data_np = np.array(f_data)
+    # f_pop = f_data_np[:, 1]
+    # m_data = has_pop.filter_by(female=False, manager=False, year=y).all()
+    # m_data_np = np.array(m_data)
+    # m_pop = m_data_np[:, 1]
+    # total_pop = f_pop + m_pop
+
+    # final_data = np.column_stack((f_data_np[:, 0], (f_pop/total_pop)))
+    # final_data = final_data.tolist()
+
+    # data_dict = {}
+
+    # for i in range(len(final_data)):
+    #     data_dict[int(final_data[i][0])] = final_data[i][1]
+
+    data_dict = get_chart_employee(y)
     us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
 
     chart_labels = []
@@ -240,6 +178,9 @@ def get_chart_data_employee():
     all_data.append(chart_data)
     all_data[1].append(float(us_emp_avg))
 
+    print "*~*~*~*~~*~*~*~*~*~*~~*~**~~*~*~*~*~*~*~*~*~*~"
+    print all_data
+
     return jsonify(all_data)
 
 
@@ -248,8 +189,8 @@ def get_reverse_data_employee():
     """Get data from db query to populate bottom districts chart. """
 
     data_dict = get_chart_employee()
-    us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
 
+    us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
 
     chart_labels = []
     chart_data = []
@@ -448,17 +389,17 @@ def get_district_from_zipcode():
 ########### HELPER FUNCTIONS
 
 
-def get_chart_employee():
+def get_chart_employee(year):
     """   """
     has_pop = db.session.query(
         CitizenGroup.location_id,
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
 
     # ALL EMPLOYED PERSONS POPULATION & DISTRICT INFO
-    f_data = has_pop.filter_by(female=True, manager=False).all()
+    f_data = has_pop.filter_by(female=True, manager=False, year=year).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=False).all()
+    m_data = has_pop.filter_by(female=False, manager=False, year=year).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
