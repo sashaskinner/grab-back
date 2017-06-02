@@ -312,14 +312,15 @@ def get_district_from_zipcode():
 
     data_dict = get_chart_employee(y)
 
+    manager_dict = get_chart_manager(y)
+
     # convert SQLAlchemy search result to int
     lookup_id = np.array(lookup_id)
     lookup_id = lookup_id[0]
     lookup_id = int(lookup_id)
 
     lookup_percent = '{:.2f}'.format(data_dict[lookup_id]*100)
-
-    # lookup_percent = str(lookup_percent) + '%'
+    manager_lookup_percent = '{:.2f}'.format(manager_dict[lookup_id]*100)
 
     # now lookup state averages for all & for managers
     all_state_lookup = db.session.query(func.sum(CitizenGroup.population).label(
@@ -365,13 +366,28 @@ def get_district_from_zipcode():
     us_emp_avg = us_women_lookup[0][0]/us_emp_lookup[0][0]
     us_emp_percent = '{:.2f}'.format(us_emp_avg * 100)
 
+    # manager us averages
+    us_manager_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=True, year=y).all()
+
+    us_women_manager_lookup = db.session.query(func.sum(
+        CitizenGroup.population).label(
+        'average')).filter_by(manager=True, female=True, year=y).all()
+
+    us_manager_avg = us_women_manager_lookup[0][0]/us_manager_lookup[0][0]
+    us_manager_percent = '{:.2f}'.format(us_manager_avg * 100)
+
     return jsonify({'lookup_id': lookup_id,
                     'lookup_percent': lookup_percent,
+                    'manager_lookup_percent': manager_lookup_percent,
                     'lookup_state': lookup_state,
                     'lookup_dist': lookup_dist,
                     'state_emp_avg': state_emp_percent,
                     'state_manager_avg': state_manager_percent,
-                    'us_emp_avg': us_emp_percent})
+                    'us_emp_avg': us_emp_percent,
+                    'us_manager_avg': us_manager_percent
+                    })
 
 
 ########### HELPER FUNCTIONS
