@@ -116,32 +116,8 @@ def get_employee_info():
 def get_chart_data_employee():
     """Get data from db query to populate chart. """
 
-    y = request.args.get("year", 2014)
+    y = request.args.get("year", 2015)
     y = int(y)
-
-    print "#$()*$(#)*$#)(@*$#)(*$#).    " + str(y) + "     $#)*(*#($*#()$*#()$*#)(*$)("
-
-    # has_pop = db.session.query(
-    #     CitizenGroup.location_id,
-    #     CitizenGroup.population,
-    #     CitizenGroup.year).filter(CitizenGroup.population.isnot(None))
-
-    # # ALL EMPLOYED PERSONS POPULATION & DISTRICT INFO
-    # f_data = has_pop.filter_by(female=True, manager=False, year=y).all()
-    # f_data_np = np.array(f_data)
-    # f_pop = f_data_np[:, 1]
-    # m_data = has_pop.filter_by(female=False, manager=False, year=y).all()
-    # m_data_np = np.array(m_data)
-    # m_pop = m_data_np[:, 1]
-    # total_pop = f_pop + m_pop
-
-    # final_data = np.column_stack((f_data_np[:, 0], (f_pop/total_pop)))
-    # final_data = final_data.tolist()
-
-    # data_dict = {}
-
-    # for i in range(len(final_data)):
-    #     data_dict[int(final_data[i][0])] = final_data[i][1]
 
     data_dict = get_chart_employee(y)
     us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
@@ -178,9 +154,6 @@ def get_chart_data_employee():
     all_data.append(chart_data)
     all_data[1].append(float(us_emp_avg))
 
-    print "*~*~*~*~~*~*~*~*~*~*~~*~**~~*~*~*~*~*~*~*~*~*~"
-    print all_data
-
     return jsonify(all_data)
 
 
@@ -188,8 +161,10 @@ def get_chart_data_employee():
 def get_reverse_data_employee():
     """Get data from db query to populate bottom districts chart. """
 
-    data_dict = get_chart_employee()
+    y = request.args.get("year", 2015)
+    y = int(y)
 
+    data_dict = get_chart_employee(y)
     us_emp_avg = '{:.2f}'.format(get_us_emp_average() * 100)
 
     chart_labels = []
@@ -231,7 +206,10 @@ def get_reverse_data_employee():
 def get_chart_data_manager():
     """Get data from db query to populate chart. """
 
-    data_dict = get_chart_manager()
+    y = request.args.get("year", 2015)
+    y = int(y)
+
+    data_dict = get_chart_manager(y)
     us_manager_avg = '{:.2f}'.format(get_us_manager_average() * 100)
 
     chart_labels = []
@@ -273,7 +251,10 @@ def get_chart_data_manager():
 def get_reverse_data_manager():
     """Get data from db query to populate bottom districts chart. """
 
-    data_dict = get_chart_manager()
+    y = request.args.get("year", 2015)
+    y = int(y)
+
+    data_dict = get_chart_manager(y)
     us_manager_avg = '{:.2f}'.format(get_us_manager_average() * 100)
 
     chart_labels = []
@@ -320,13 +301,16 @@ def get_district_from_zipcode():
     z = request.args.get("zipcode-entry")
     z = int(z)
 
+    y = request.args.get("year", 2015)
+    y = int(y)
+
     lookup_id = db.session.query(Zipcode.location_id).filter_by(zipcode=z).first()
     district_lookup = db.session.query(Zipcode.state_name, Zipcode.district_id).filter_by(zipcode=z).first()
 
     lookup_state = str(district_lookup[0])
     lookup_dist = int(district_lookup[1])
 
-    data_dict = get_chart_employee()
+    data_dict = get_chart_employee(y)
 
     # convert SQLAlchemy search result to int
     lookup_id = np.array(lookup_id)
@@ -340,12 +324,14 @@ def get_district_from_zipcode():
     # now lookup state averages for all & for managers
     all_state_lookup = db.session.query(func.sum(CitizenGroup.population).label(
         'average')).filter_by(manager=False,
-                              state_name=lookup_state).all()
+                              state_name=lookup_state,
+                              year=y).all()
 
     all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label(
         'average')).filter_by(manager=False,
                               female=True,
-                              state_name=lookup_state).all()
+                              state_name=lookup_state,
+                              year=y).all()
 
     state_emp_avg = all_lookup_women[0][0]/all_state_lookup[0][0]
     state_emp_percent = '{:.2f}'.format(state_emp_avg * 100)
@@ -354,13 +340,15 @@ def get_district_from_zipcode():
     manager_district_lookup = db.session.query(func.sum(
         CitizenGroup.population).label(
         'average')).filter_by(manager=True,
-                              state_name=lookup_state).all()
+                              state_name=lookup_state,
+                              year=y).all()
 
     manager_women_lookup = db.session.query(func.sum(
         CitizenGroup.population).label(
         'average')).filter_by(manager=True,
                               female=True,
-                              state_name=lookup_state).all()
+                              state_name=lookup_state,
+                              year=y).all()
 
     state_manager_avg = manager_women_lookup[0][0]/manager_district_lookup[0][0]
     state_manager_percent = '{:.2f}'.format(state_manager_avg * 100)
@@ -368,11 +356,11 @@ def get_district_from_zipcode():
     # all us averages
     us_emp_lookup = db.session.query(func.sum(
         CitizenGroup.population).label(
-        'average')).filter_by(manager=False).all()
+        'average')).filter_by(manager=False, year=y).all()
 
     us_women_lookup = db.session.query(func.sum(
         CitizenGroup.population).label(
-        'average')).filter_by(manager=False, female=True).all()
+        'average')).filter_by(manager=False, female=True, year=y).all()
 
     us_emp_avg = us_women_lookup[0][0]/us_emp_lookup[0][0]
     us_emp_percent = '{:.2f}'.format(us_emp_avg * 100)
@@ -415,7 +403,7 @@ def get_chart_employee(year):
     return data_dict
 
 
-def get_chart_manager():
+def get_chart_manager(year):
     """Get manager data for Chart.js bar graph."""
 
     has_pop = db.session.query(
@@ -423,10 +411,10 @@ def get_chart_manager():
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
 
     # ALL EMPLOYED PERSONS
-    f_data = has_pop.filter_by(female=True, manager=True).all()
+    f_data = has_pop.filter_by(female=True, manager=True, year=year).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=True).all()
+    m_data = has_pop.filter_by(female=False, manager=True, year=year).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
