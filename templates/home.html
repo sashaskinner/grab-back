@@ -84,16 +84,10 @@
 
     <div id="slider">
       <p id="currentYear">2015</p>
-      <input id="year" type="range" value="2015" min="2014" max="2015">
+      <input id="year" type="range" value="2015" min="2012" max="2015">
     </div>
 
-    <script type="text/javascript">
 
-      $("#year").on("change", function () {
-          $("#currentYear").html($("#year").val());
-      });
-
-    </script>
 
     <!-- input form for zipcode lookup add button -->
     <div id="zipcode-search">
@@ -110,12 +104,17 @@
     </div>
 
     <!-- <div> containing buttons to update map data. -->
-      <input type="radio" name="empType" id="allEmp">All Employees (% Women)
-      <input type="radio" name="empType" id="manager" checked="checked">Managers (% Women)
-      <input type="radio" name="empType" id="bottomFiveEmp">Lowest 5 % Employees Women
-      <input type="radio" name="empType" id="bottomFiveManager">Lowest 5 % Managers Women
+    <form id="category">
+      <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
+      <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
+    </form>
     <br><br>
-    
+
+    <form id="bottomFive">
+      <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
+      <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
+    </form>
+    <br><br>
 
 
     <!-- BEGIN JS -->
@@ -129,8 +128,9 @@
         $("#graph-container").append("<canvas id='district-rank' width=450, height=500</canvas>");
 
         var ctx = $("#district-rank");
+        var empOn = $('input[name=empType]:checked', '#category').val();
                 
-        if ( empOn || bottomEmpOn ) {
+        if ( empOn === "allEmps" ) {
             var data = {
               labels: ["District No. " + results.lookup_dist + " (All)",
                         results.lookup_state, 
@@ -179,6 +179,7 @@
       };
 
       $("#zipcode-submit").on("click", getDistrictId);
+
 
     </script>
 
@@ -594,12 +595,18 @@
     $("#allEmp").on("click", function () {        
               
               var yearValue = $("#year").val();
+              var zipcode = $("#zipcode-entry").val();
+
+              var zipOnly = $("#view-zip-compare").is(":checked");
+
 
               queue()
               .defer(d3.json, "/us.json")
               .defer(d3.json, "/us-congress-113.json")
               .defer(d3.json, "/district-employee-info.json?year="+yearValue)
               .await(ready);
+
+        if ( zipOnly === false ) {
 
               $("#district-rank").remove();
               $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
@@ -630,13 +637,23 @@
                         }
                           }}
                         );
-                })
+                }) } // end if statement
+
+       else if ( zipOnly === true ) {
+          
+          $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
+
+       } //end else if 
+
         });
     
 
 
     $("#manager").on("click", function () {
         var yearValue = $("#year").val();
+        var zipcode = $("#zipcode-entry").val();
+        
+        var zipOnly = $("#view-zip-compare").is(":checked");
 
         queue()
               .defer(d3.json, "/us.json")
@@ -644,16 +661,26 @@
               .defer(d3.json, "/district-manager-info.json?year="+yearValue)
               .await(ready);
         
-        function updateRankChartManager() {
+        if ( zipOnly === false ) {
 
-          $("#district-rank").remove();
-          $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
+          function updateRankChartManager() {
+
+            $("#district-rank").remove();
+            $("#graph-container").append("<canvas id='district-rank' width=550, height=500></canvas>");
+            
+            createRankChartManager();
+
+            }
+
+          updateRankChartManager(); 
+
+       } // end if statement
+
+       else if ( zipOnly === true ) {
           
-          createRankChartManager();
+          $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
 
-          }
-
-        updateRankChartManager();
+       } //end else if 
 
       } // end anonymous function for on manager click.
       );
@@ -734,22 +761,25 @@
 
       });
 
-    
+
     //////////////////////
     // was the slider used?
 
-    $("#year").on("change", function () {
+    $("#year").on("input", function () {
         var yearValue = $("#year").val();
         var zipcode = $("#zipcode-entry").val();
         var zipOnly = $("#view-zip-compare").is(":checked");
 
-        if (zipOnly == true && $("input[type=radio][id=allEmp]:checked").val() == "on") {
+        $("#currentYear").text(yearValue);
+
+
+        if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
         
           $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
 
         } // end if statement
 
-        else if (zipOnly == true && $("input[type=radio][id=manager]:checked").val() == "on") {
+        else if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "Managers") {
 
           $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
 
@@ -757,7 +787,7 @@
       } // end else if statement
 
 
-        else if ($("input[type=radio][id=manager]:checked").val() == "on") {
+        else if ($('input[name=empType]:checked', '#category').val() === "Managers") {
   
         queue()
               .defer(d3.json, "/us.json")
@@ -778,7 +808,7 @@
 
       } // end if statement (if radio button "manager is checked")
 
-      else if ($("input[type=radio][id=allEmp]:checked").val() == "on") {
+      else if ($('input[name=empType]:checked', '#category').val() === "allEmps") {
         
         queue()
               .defer(d3.json, "/us.json")
