@@ -25,6 +25,10 @@
 
     <style>
 
+      body {
+        background: url(static/css/concrete-texture.png) repeat center center;
+      }
+
       path {
         stroke-linejoin: round;
         stroke-linecap: round;
@@ -70,8 +74,7 @@
 
       #graph-container {
         float: right;
-/*        margin: 8em auto auto auto;
-*/        padding: 0;
+        margin: 125px auto auto auto;
         display: inline-block;
       }
 
@@ -90,6 +93,15 @@
       margin-top: 2em;
     }
 
+    #dashboard {
+      float: right;
+      margin-top: 0.5em;
+      width: 450px;
+      height: 275px;
+      background-color: #E0E6EB;
+      border-radius: 5px;
+    }
+
 
     </style>
 
@@ -106,61 +118,125 @@
       <!-- Chart.js -->
       <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     
-    <div class="container-fluid" id="main-container">
-    
-    <div class="row">
-      <div class="col-md-2" id="slider">
-          <input id="year" type="range" value="2015" min="2012" max="2015">
-      </div>
-      <div class="col-md-10"></div>
-    </div>
+  <!-- Begin Bootstrap Container -->
+  <div class="container-fluid" id="main-container">
 
+  <!-- map & chart -->
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-xs-12 col-md-12 col-lg-8 col-xl-8">
       <div id="map-container"></div>
+    </div>
     <!-- canvas for chart with top/bottom 5 % female employees -->
-    <div class="col-md-4">
+    <div class="col-xs-12 col-md-12 col-lg-4 col-xl-4">
       <div id="graph-container">
         <canvas id="district-rank" width="450" height="400"></canvas>
-      <div class="btn-group" data-toggle="buttons" id="bottomFive">
-        <label class="btn btn-default">
-          <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
-        </label>
-        <label class="btn btn-default">
-          <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
-        </label>
       </div>
+      <div id="dashboard">
+        <center><h4>Explore the Data</h4></center>
+
+
+          <!-- change categories -->
+          <div class="btn-group" data-toggle="buttons" id="category">
+            <label class="btn btn-primary">
+              <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
+            </label>
+        
+            <label class="btn btn-primary active">
+              <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
+            </label>
+          </div>
+
+          <!-- see bottom five -->
+          <div class="btn-group" data-toggle="buttons" id="bottomFive">
+            <label class="btn btn-default">
+              <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
+            </label>
+            <label class="btn btn-default">
+              <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
+            </label>
+        </div>
+
+          <!-- year slider -->
+          <div id="slider">
+            <p><i>See another year</i></p>
+            <input id="year" type="range" value="2015" min="2012" max="2015" step="1" list="steplist">
+            <datalist id="steplist">
+              <option>2012</option>
+              <option>2013</option>
+              <option>2014</option>
+              <option>2015</option>
+            </datalist>
+        </div>
+
+        <!-- search by zipcode -->
+        <div id="zipcode-search">
+          Find District by Zipcode: 
+          <input id="zipcode-entry" type="text" name="zipcode-entry">
+          <button id="zipcode-submit" type="submit">Go!</button>
+          <input id="view-zip-compare" type="checkbox">Just see my zipcode charts.
+        </div>
+
       </div>
     </div>
   </div>
 
+  <!-- see bottom 5 districts -->
+<!--   <div class="row">
+    <div class="col-xs-4">
+      <div class="btn-group" data-toggle="buttons" id="bottomFive">
+        <label class="btn btn-default">
+            <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
+          </label>
+          <label class="btn btn-default">
+            <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
+          </label>
+        </div>
+    </div>
+    <div class="col-xs-8"></div>
+  </div> -->
+
       <!-- input form for zipcode lookup add button -->
-    <div class="row">
-      <div class="col-md-2" id="zipcode-search">
+<!--     <div class="row">
+      <div class="col-xs-2" id="zipcode-search">
         Find District by Zipcode: 
         <input id="zipcode-entry" type="text" name="zipcode-entry">
         <button id="zipcode-submit" type="submit">Go!</button>
         <input id="view-zip-compare" type="checkbox">Just see my zipcode charts.
       </div>
-      <div class="col-md-10"></div>
-    </div>
-
-
+      <div class="col-xs-10"></div>
+    </div> -->
 
 
     <!-- <div> containing buttons to update map data. -->
-    <div class="btn-group" data-toggle="buttons" id="category">
-        <label class="btn btn-primary">
-          <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
-        </label>
-      
-        <label class="btn btn-primary active">
-          <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
-        </label>
+<!--   <div class="row">
+    <div class="col-xs-4">
+      <div class="btn-group" data-toggle="buttons" id="category">
+          <label class="btn btn-primary">
+            <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
+          </label>
+        
+          <label class="btn btn-primary active">
+            <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
+          </label>
+      </div>
     </div>
+  </div> -->
 
-
-
+    <!-- Year range slider -->
+<!--     <div class="row">
+      <div class="col-xs-2" id="slider">
+          <p><i>See another year</i></p>
+          <input id="year" type="range" value="2015" min="2012" max="2015" step="1" list="steplist">
+            <datalist id="steplist">
+              <option>2012</option>
+              <option>2013</option>
+              <option>2014</option>
+              <option>2015</option>
+            </datalist>
+      </div>
+      <div class="col-xs-10"></div>
+    </div>
+ -->
 
     <!-- BEGIN JS -->
     <script type="text/javascript">
@@ -208,6 +284,9 @@
           data: data,
           options: {
               responsive: false,
+              legend: {
+                display: false
+              },
               title: {
                   display: true,
                   text: 'District vs State & US Average'
@@ -245,7 +324,7 @@
 
         d3.select("#map-container").append("h3")
             .attr("id", "currentYear")
-            .text("Percent women employed in 2015");
+            .text("Percent women in labor force in 2015");
         
         var svg = d3.select("#map-container").append("svg")
             .attr("width", width)
@@ -583,7 +662,7 @@
         };
 
         var districtRankChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: data,
           options: {
               responsive: false,
