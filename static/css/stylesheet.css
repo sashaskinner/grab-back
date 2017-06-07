@@ -1,0 +1,93 @@
+  body {
+    background: url(static/css/concrete-texture.png) repeat center center;
+  }
+
+ #main-container {
+    margin: 2em;
+    padding: 0;
+  }
+
+  #navBarContainer {
+    margin: 0.10em 0.10em 0em 2em;
+    padding: 0;
+  }
+
+  #graph-container {
+    margin: 100px auto auto 1em;
+    display: inline-block;
+  }
+
+  #map-container {
+    margin: auto;
+    padding: 1em;
+    display: inline-block;
+  }
+
+#changeYear {
+  margin-left: 2em;
+  margin-top: 0em;
+  width: 6em;
+  display: inline-block;
+}
+
+#slider {
+  margin-left: auto;
+  margin-right: 2em;
+  margin-top: 0.25em;
+  width: 20em;
+  display: inline-block;
+}
+
+#dashboard {
+  float: right;
+  margin-top: 2em;
+  width: 450px;
+  height: 225px;
+  background-color: #E0E6EB;
+  border-radius: 5px;
+}
+
+#category {
+  margin-top: 1em;
+}
+
+#bottomFiveLabel {
+  font-size: 85%;
+}
+
+#bottomFive {
+  margin-bottom: 0.75em;
+}
+
+#zipcode-search {
+  margin-top: 0.5em;
+  padding-right: 2em;
+  float: right;
+}
+
+#zipHeader {
+  margin-left: 2em;
+  display: inline-block;
+}
+
+#zipcode-entry {
+  width: 13em;
+}
+
+.navbar-inverse {
+  background-color: #C0CCD6;
+}
+
+#navTitle {
+  padding-right: 0em;
+}
+
+#navHome {
+  padding-right: 1em;
+  padding-top: 1em;
+}
+
+#navAbout {
+  padding-left: 1em;
+  padding-top: 1em;
+}

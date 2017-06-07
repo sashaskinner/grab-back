@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <head>
-    <title>Home</title>
+    <title>Grab Back</title>
     <meta charset="utf-8">
+
+    <link rel="shortcut icon" type="image/png" href="http://icons.iconarchive.com/icons/sonya/swarm/128/Cat-icon.png"/>
 
     <!-- JQuery -->
     <script
@@ -19,7 +21,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <!-- Links to my static files -->
-
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
 
 
@@ -27,6 +29,11 @@
 
       body {
         background: url(static/css/concrete-texture.png) repeat center center;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Source Sans Pro', sans-serif;
       }
 
       path {
@@ -72,35 +79,132 @@
         padding: 0;
       }
 
+      #navBarContainer {
+        margin: 0.10em 0.10em 0em 2em;
+        padding: 0;
+      }
+
       #graph-container {
         float: right;
-        margin: 125px auto auto auto;
+        margin: 100px auto auto 1em;
         display: inline-block;
       }
 
       #map-container {
         float: left;
         margin: auto;
-        padding: 0;
+        padding: 1em;
         display: inline-block;
       }
 
-      #zipcode {
-        float: right;
-      }
+    #changeYear {
+      margin-left: 1em;
+      margin-top: 0em;
+      width: 6em;
+      display: inline-block;
+    }
 
     #slider {
-      margin-top: 2em;
+      float: right;
+      margin-left: auto;
+      margin-right: 2em;
+      margin-top: 0.25em;
+      width: 20em;
+      display: inline-block;
     }
 
     #dashboard {
       float: right;
-      margin-top: 0.5em;
+      margin-top: 2em;
       width: 450px;
-      height: 275px;
+      height: 230px;
       background-color: #E0E6EB;
       border-radius: 5px;
     }
+
+    #category {
+      margin: 0em;
+    }
+
+    #explore {
+      margin: 0.5em 0em 0em 0em;
+    }
+
+    #selectButton {
+      font-size: 85%;
+    }
+
+    #bottomFiveLabel {
+      font-size: 85%;
+    }
+
+    #bottomFive {
+      margin-bottom: 0.75em;
+    }
+
+    #zipcode-search {
+      margin-top: 0.5em;
+      padding-right: 5em;
+      float: right;
+    }
+
+    #zipHeader {
+      margin-left: 2em;
+      display: inline-block;
+    }
+
+    #zipcode-entry {
+      width: 13em;
+    }
+
+    .navbar-grabBack {
+      background: #424446;
+      border-radius: 1px;
+      box-shadow: none;
+    }
+
+
+    #navTitle {
+      padding-right: 0em;
+      color: #F0F0F1;
+      font-size: 180%;
+      font-weight: bold;
+      box-shadow: none;
+    }
+
+    #navHome {
+      padding-right: 0.25em;
+      padding-top: 0.75em;
+      font-size: 125%;
+    }
+
+    #navAbout {
+      padding-left: 1em;
+      padding-top: 1.1em;
+      padding-top: 0.75em;
+      font-size: 125%;
+    }
+
+    #navHome a {
+      color: #F0F0F1;
+    }
+
+    #navAbout a {
+      color: #F0F0F1;
+
+    }
+    
+    #navHome a:hover {
+      color: #2f78c4;
+      text-decoration: none;
+    }
+
+    #navAbout a:hover {
+      color: #2f78c4;
+      text-decoration: none;
+
+    }
+
 
 
     </style>
@@ -108,6 +212,29 @@
 </head>
 
   <body>
+
+
+    <!-- navbar -->
+    <nav class="navbar navbar-grabBack bg-faded">
+      <div class="container-fluid" id="navBarContainer">
+      <span class="navbar-brand" id="navTitle">Grab Back</span>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul style="list-style: none" class="navbar-nav mr-auto mt-2 mt-md-0">
+          <li class="nav-item active" id="navHome">
+            <a class="nav-link" id="navHomeLink" href="http://localhost:5000/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item" id="navAbout">
+            <a class="nav-link" id="navAboutLink" href="http://localhost:5000/about">About</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" id="zipcode-search">
+          <input class="form-control mr-sm-2" id="zipcode-entry" type="text" placeholder="Find District by Zipcode">
+          <button class="btn btn-outline-success my-2 my-sm-0" id="zipcode-submit" type="submit">Search</button>
+        </form>
+      </div>
+      </div> 
+    </nav>
 
       <!-- d3.js -->
       <script type="text/javascript" src="static/d3/d3.min.js"></script>
@@ -131,35 +258,36 @@
       <div id="graph-container">
         <canvas id="district-rank" width="450" height="400"></canvas>
       </div>
+      
       <div id="dashboard">
-        <center><h4>Explore the Data</h4></center>
-
-
+        <center><h3 id="explore">Explore Data</h3></center><br>
+        <center><p id="selectButton">Choose a Category of Employee</p></center>
           <!-- change categories -->
-          <div class="btn-group" data-toggle="buttons" id="category">
-            <label class="btn btn-primary">
-              <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
+          <center><div class="btn-group" data-toggle="buttons" id="category">
+            <label class="btn btn-sm btn-primary">
+              <input type="radio" name="empType" id="allEmp" value="allEmps">Entire Labor Force
             </label>
         
-            <label class="btn btn-primary active">
-              <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
+            <label class="btn btn-sm btn-primary active">
+              <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Management Positions
             </label>
-          </div>
-
+          </div></center>
+          <br>
           <!-- see bottom five -->
-          <div class="btn-group" data-toggle="buttons" id="bottomFive">
-            <label class="btn btn-default">
-              <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
+          <center><div class="btn-group" data-toggle="buttons" id="bottomFive">
+            <p id="bottomFiveLabel">Districts with Smallest Representation of: </p>
+            <label class="btn btn-xs btn-default">
+              <input type="radio" name="backRank" id="bottomFiveEmp">Entire Labor Force
             </label>
-            <label class="btn btn-default">
-              <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
+            <label class="btn btn-xs btn-default">
+              <input type="radio" name="backRank" id="bottomFiveManager">Management Positions
             </label>
-        </div>
+        </div></center>
 
-          <!-- year slider -->
-          <div id="slider">
-            <p><i>See another year</i></p>
-            <input id="year" type="range" value="2015" min="2012" max="2015" step="1" list="steplist">
+         <!-- year slider -->
+        <h4 id="changeYear">Change Year</h4>
+        <div id="slider">
+            <input class="bar" id="year" type="range" min="2012" max="2015" step="1" value="2015"/>
             <datalist id="steplist">
               <option>2012</option>
               <option>2013</option>
@@ -168,75 +296,11 @@
             </datalist>
         </div>
 
-        <!-- search by zipcode -->
-        <div id="zipcode-search">
-          Find District by Zipcode: 
-          <input id="zipcode-entry" type="text" name="zipcode-entry">
-          <button id="zipcode-submit" type="submit">Go!</button>
-          <input id="view-zip-compare" type="checkbox">Just see my zipcode charts.
-        </div>
 
       </div>
     </div>
   </div>
 
-  <!-- see bottom 5 districts -->
-<!--   <div class="row">
-    <div class="col-xs-4">
-      <div class="btn-group" data-toggle="buttons" id="bottomFive">
-        <label class="btn btn-default">
-            <input type="radio" name="backRank" id="bottomFiveEmp">Lowest 5 % Employees Women
-          </label>
-          <label class="btn btn-default">
-            <input type="radio" name="backRank" id="bottomFiveManager">Lowest 5 % Managers Women
-          </label>
-        </div>
-    </div>
-    <div class="col-xs-8"></div>
-  </div> -->
-
-      <!-- input form for zipcode lookup add button -->
-<!--     <div class="row">
-      <div class="col-xs-2" id="zipcode-search">
-        Find District by Zipcode: 
-        <input id="zipcode-entry" type="text" name="zipcode-entry">
-        <button id="zipcode-submit" type="submit">Go!</button>
-        <input id="view-zip-compare" type="checkbox">Just see my zipcode charts.
-      </div>
-      <div class="col-xs-10"></div>
-    </div> -->
-
-
-    <!-- <div> containing buttons to update map data. -->
-<!--   <div class="row">
-    <div class="col-xs-4">
-      <div class="btn-group" data-toggle="buttons" id="category">
-          <label class="btn btn-primary">
-            <input type="radio" name="empType" id="allEmp" value="allEmps">All Employees (% Women)
-          </label>
-        
-          <label class="btn btn-primary active">
-            <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Managers (% Women)
-          </label>
-      </div>
-    </div>
-  </div> -->
-
-    <!-- Year range slider -->
-<!--     <div class="row">
-      <div class="col-xs-2" id="slider">
-          <p><i>See another year</i></p>
-          <input id="year" type="range" value="2015" min="2012" max="2015" step="1" list="steplist">
-            <datalist id="steplist">
-              <option>2012</option>
-              <option>2013</option>
-              <option>2014</option>
-              <option>2015</option>
-            </datalist>
-      </div>
-      <div class="col-xs-10"></div>
-    </div>
- -->
 
     <!-- BEGIN JS -->
     <script type="text/javascript">
@@ -280,7 +344,7 @@
         }
 
         var stateUSCompare = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: data,
           options: {
               responsive: false,
@@ -590,7 +654,7 @@
         };
 
         var districtRankChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: data,
           options: {
               responsive: false,
@@ -626,7 +690,7 @@
         };
 
         var districtRankChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: data,
           options: {
               responsive: false,
@@ -697,7 +761,7 @@
         };
 
         var districtRankChart = new Chart(ctx, {
-          type: 'bar',
+          type: 'horizontalBar',
           data: data,
           options: {
               responsive: false,
@@ -727,7 +791,6 @@
 
               var zipOnly = $("#view-zip-compare").is(":checked");
 
-
               queue()
               .defer(d3.json, "/us.json")
               .defer(d3.json, "/us-congress-113.json")
@@ -753,7 +816,7 @@
                   };
 
                   var districtRankChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'horizontalBar',
                     data: data,
                     options: {
                         responsive: false,
@@ -834,7 +897,7 @@
             };
 
             var districtRankChart = new Chart(ctx, {
-              type: 'bar',
+              type: 'horizontalBar',
               data: data,
               options: {
                   responsive: false,
@@ -873,7 +936,7 @@
             };
 
             var districtRankChart = new Chart(ctx, {
-              type: 'bar',
+              type: 'horizontalBar',
               data: data,
               options: {
                   responsive: false,
@@ -899,6 +962,7 @@
         var zipOnly = $("#view-zip-compare").is(":checked");
 
         $("#currentYear").text("Percent women employed in " + yearValue);
+        $("#sliderYear").text(yearValue);
 
 
         if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
@@ -963,7 +1027,7 @@
               };
 
               var districtRankChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'horizontalBar',
                 data: data,
                 options: {
                     responsive: false,
@@ -1002,7 +1066,7 @@
             };
 
             var districtRankChart = new Chart(ctx, {
-              type: 'bar',
+              type: 'horizontalBar',
               data: data,
               options: {
                   responsive: false,
@@ -1043,7 +1107,7 @@
             };
 
             var districtRankChart = new Chart(ctx, {
-              type: 'bar',
+              type: 'horizontalBar',
               data: data,
               options: {
                   responsive: false,

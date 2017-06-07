@@ -28,6 +28,12 @@ def index():
     return render_template("home.html")
 
 
+@app.route('/about')
+def about():
+    """About Page"""
+
+    return render_template("about.html")
+
 @app.route('/us.json')
 def us_json():
     """JSON file with US map specs."""
@@ -490,7 +496,7 @@ def get_state_manager_average():
 
 if __name__ == "__main__":
 
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 
