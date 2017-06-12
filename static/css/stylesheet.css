@@ -1,7 +1,5 @@
-console.log("im here")
-
 body {
-  background: url(static/css/concrete-texture.png) repeat center center;
+  background: url(./concrete-texture.png) repeat center center;
   font-family: 'Open Sans', sans-serif;
 }
 
