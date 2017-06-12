@@ -1,16 +1,21 @@
 <!DOCTYPE html>
+
 <head>
+
     <title>Grab Back</title>
     <meta charset="utf-8">
 
     <link rel="shortcut icon" type="image/png" href="http://icons.iconarchive.com/icons/sonya/swarm/128/Cat-icon.png"/>
-
-    <!-- JQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous"></script>
     
+    <!-- Links to style files-->
+    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.js"
+      integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+      crossorigin="anonymous"></script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -20,199 +25,20 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <!-- Links to my static files -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
-
-
-    <style>
-
-      body {
-        background: url(static/css/concrete-texture.png) repeat center center;
-        font-family: 'Open Sans', sans-serif;
-      }
-
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Source Sans Pro', sans-serif;
-      }
-
-      path {
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      svg {
-        display: block;
-        margin-left: auto;
-        margin-right: 45%;
-      }
-
-      .background {
-        fill: none;
-        pointer-events: all;
-      }
-
-      .districts {
-        fill: #bbb;
-      }
-
-      .districts :hover {
-        fill: #e11a88;
-      }
-
-      .district-boundaries {
-        pointer-events: none;
-        fill: none;
-        stroke: #fff;
-        stroke-width: .5px;
-      }
-
-      .state-boundaries {
-        pointer-events: none;
-        fill: none;
-        stroke: #fff;
-        stroke-width: 1.25px;
-      }
-
-      #main-container {
-        margin: 2em;
-        padding: 0;
-      }
-
-      #navBarContainer {
-        margin: 0.10em 0.10em 0em 2em;
-        padding: 0;
-      }
-
-      #graph-container {
-        float: right;
-        margin: 100px auto auto 1em;
-        display: inline-block;
-      }
-
-      #map-container {
-        float: left;
-        margin: auto;
-        padding: 1em;
-        display: inline-block;
-      }
-
-    #changeYear {
-      margin-left: 1em;
-      margin-top: 0em;
-      width: 6em;
-      display: inline-block;
-    }
-
-    #slider {
-      float: right;
-      margin-left: auto;
-      margin-right: 2em;
-      margin-top: 0.25em;
-      width: 20em;
-      display: inline-block;
-    }
-
-    #dashboard {
-      float: right;
-      margin-top: 2em;
-      width: 450px;
-      height: 230px;
-      background-color: #E0E6EB;
-      border-radius: 5px;
-    }
-
-    #category {
-      margin: 0em;
-    }
-
-    #explore {
-      margin: 0.5em 0em 0em 0em;
-    }
-
-    #selectButton {
-      font-size: 85%;
-    }
-
-    #bottomFiveLabel {
-      font-size: 85%;
-    }
-
-    #bottomFive {
-      margin-bottom: 0.75em;
-    }
-
-    #zipcode-search {
-      margin-top: 0.5em;
-      padding-right: 5em;
-      float: right;
-    }
-
-    #zipHeader {
-      margin-left: 2em;
-      display: inline-block;
-    }
-
-    #zipcode-entry {
-      width: 13em;
-    }
-
-    .navbar-grabBack {
-      background: #424446;
-      border-radius: 1px;
-      box-shadow: none;
-    }
-
-
-    #navTitle {
-      padding-right: 0em;
-      color: #F0F0F1;
-      font-size: 180%;
-      font-weight: bold;
-      box-shadow: none;
-    }
-
-    #navHome {
-      padding-right: 0.25em;
-      padding-top: 0.75em;
-      font-size: 125%;
-    }
-
-    #navAbout {
-      padding-left: 1em;
-      padding-top: 1.1em;
-      padding-top: 0.75em;
-      font-size: 125%;
-    }
-
-    #navHome a {
-      color: #F0F0F1;
-    }
-
-    #navAbout a {
-      color: #F0F0F1;
-
-    }
+    <!-- d3.js -->
+    <script type="text/javascript" src="static/d3/d3.min.js"></script>
+    <script src="static/js/queue.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
+    <!-- Chart.js -->
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     
-    #navHome a:hover {
-      color: #2f78c4;
-      text-decoration: none;
-    }
-
-    #navAbout a:hover {
-      color: #2f78c4;
-      text-decoration: none;
-
-    }
-
-
-
-    </style>
+    <script type="text/javascript" src="../static/js/functions.js"></script>
 
 </head>
 
-  <body>
-
+<body>
 
     <!-- navbar -->
     <nav class="navbar navbar-grabBack bg-faded">
@@ -236,15 +62,7 @@
       </div> 
     </nav>
 
-      <!-- d3.js -->
-      <script type="text/javascript" src="static/d3/d3.min.js"></script>
-      <script src="static/js/queue.v1.min.js"></script>
-      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-      <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
-      <!-- Chart.js -->
-      <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    
+
   <!-- Begin Bootstrap Container -->
   <div class="container-fluid" id="main-container">
 
@@ -295,843 +113,267 @@
               <option>2015</option>
             </datalist>
         </div>
-
-
       </div>
     </div>
   </div>
 
 
-    <!-- BEGIN JS -->
-    <script type="text/javascript">
 
-      function ZipcodeLookup(results) {
+<script type="text/javascript" src="../static/js/d3-map.js"></script>
 
-        // clear current chart
-        $("#district-rank").remove();        
-        // assign id for new chart.
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
+<script type="text/javascript">
 
-        var ctx = $("#district-rank");
-        var empOn = $('input[name=empType]:checked', '#category').val();
-                
-        if ( empOn === "allEmps" ) {
-            var data = {
-              labels: ["District No. " + results.lookup_dist + " (All)",
-                        results.lookup_state, 
-                        'U.S.'],
-              datasets: [
-              {
-                data: [results.lookup_percent, results.state_emp_avg, results.us_emp_avg],
-                backgroundColor: ['#c6dbef','#6baed6','#08306b']
+// // change data based on button click
+// ////////////////////////////////////
+// // all employees button selected ///
 
-              }]
-            };
-        }
+// $("#allEmp").on("click", function () {
+//   alert("allEmp clicked");
+// });
 
-        else {
-            var data = {
-              labels: ["District No. " + results.lookup_dist + " (Managers)",
-                        results.lookup_state, 
-                        'U.S.'],
-              datasets: [
-              {
-                data: [results.manager_lookup_percent, results.state_manager_avg, results.us_manager_avg],
-                backgroundColor: ['#c6dbef','#6baed6','#08306b']
+// $("#allEmp").on("change", function () {
 
-              }]
-            };
-        }
-
-        var stateUSCompare = new Chart(ctx, {
-          type: 'horizontalBar',
-          data: data,
-          options: {
-              responsive: false,
-              legend: {
-                display: false
-              },
-              title: {
-                  display: true,
-                  text: 'District vs State & US Average'
-                }}});
-
-      }; // end function
-
-
-      function getDistrictId(evt) {
-          evt.preventDefault();
-          var yearValue = $("#year").val();
-          var zipcode = $("#zipcode-entry").val();
-          $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-      };
-
-      $("#zipcode-submit").on("click", getDistrictId);
-
-
-    </script>
-
-    <!-- begin d3 visualization -->
-    <script type="text/javascript">
-
-        // map
-        var width = 960,
-            height = 700,
-            centered;
-
-        var projection = d3.geoAlbersUsa()
-          .scale(1280)
-          .translate([width / 2, height / 2]);
-
-        var path = d3.geoPath()
-          .projection(projection);
-
-        d3.select("#map-container").append("h3")
-            .attr("id", "currentYear")
-            .text("Percent women in labor force in 2015");
+//         console.log("allEmp button selection has been changed!");
         
-        var svg = d3.select("#map-container").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+//         var yearValue = $("#year").val();
+//         var zipcode = $("#zipcode-entry").val();
 
-        svg.append("rect")
-            .attr("class", "background")
-            .attr("width", width)
-            .attr("height", height)
-            .on("click", clicked);
+//         var zipOnly = $("#view-zip-compare").is(":checked");
 
-        var map_g = svg.append("g")
-            .attr("id", "map");
+//         queue()
+//         .defer(d3.json, "/us.json")
+//         .defer(d3.json, "/us-congress-113.json")
+//         .defer(d3.json, "/district-employee-info.json?year="+yearValue)
+//         .await(ready);
 
-        // make threshold bar key
-        var formatPercent = d3.format(".0%"),
-            formatNumber = d3.format(".0f");
+//   if ( zipOnly === false ) {
 
-        var x = d3.scaleLinear()
-            .domain([.1, .7])
-            .range([0, 300]);
-
-        var threshold = d3.scaleThreshold()
-            .domain([0.20, 0.30, 0.40, 0.50, 0.60])
-            .range(['#eff3ff','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c']);
-
-        var key_g = svg.append("g")
-            .attr("id", "key")
-            .attr("transform", "translate(600, 15)");
-
-        key_g.selectAll("rect")
-          .data(threshold.range().map(function(color) {
-            var d = threshold.invertExtent(color);
-            if (d[0] == null) d[0] = x.domain()[0];
-            if (d[1] == null) d[1] = x.domain()[1];
-            return d;
-          }))
-          .enter().append("rect")
-            .attr("height", 8)
-            .attr("x", function(d) { return x(d[0]); })
-            .attr("width", function(d) { return x(d[1]) - x(d[0]); })
-            .attr("fill", function(d) { return threshold(d[0]); });
-
-        key_g.append("text")
-            .attr("class", "caption")
-            .attr("x", x.range()[0])
-            .attr("y", -6)
-            .attr("fill", "#000")
-            .attr("font-weight", "bold")
-            .attr("text-anchor", "start")
-            .text("% Women");
-
-        key_g.call(d3.axisBottom(x)
-              .tickSize(13)
-              .tickFormat(function(x, i) { return x*100 + "%"; })
-              .tickValues(threshold.domain()))
-            .select(".domain")
-              .remove();
-
-    // minimum & maximum population values (default)
-    var minimum = 0.28,
-        maximum = 0.62;
-
-    var color = d3.scaleLinear().domain([0.20, 0.30, 0.40, 0.50, 0.60])
-                .range(['#eff3ff','#c6dbef','#9ecae1','#6baed6','#3182bd','#08519c']);
-                // .range(['#eff3ff','#bdd7e7','#6baed6','#3182bd','#08519c']);
-                // .range(['#edf8e9','#c7e9c0','#7bccc4','#74c476','#41ab5d','#238b45','#005a32']);
-                // .range(['#c7e9c0','#a1d99b','#74c476','#41ab5d','#238b45','#005a32']);   
-
-
-    
-    // zoom function
-    function clicked(d) {
-        var x, y, k;
-
-        if (d && centered !== d) {
-          var centroid = path.centroid(d);
-          x = centroid[0];
-          y = centroid[1];
-          k = 4;
-          centered = d;
-        } else {
-          x = width / 2;
-          y = height / 2;
-          k = 1;
-          centered = null;
-        }
-
-        map_g.selectAll("path")
-            .classed("active", centered && function(d) { return d === centered; });
-
-        map_g.transition()
-            .duration(750)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-            .style("stroke-width", 1.5 / k + "px");
-    } 
-
-
-    // load data
-    queue()
-        .defer(d3.json, "/us.json")
-        .defer(d3.json, "/us-congress-113.json")
-        .defer(d3.json, "/district-manager-info.json")
-        .await(ready);
-
-    // bind data to visual elements
-    function ready(error, us, congress, district) {
-      if (error) throw error;
-
-      map_g.append("defs").append("path")
-          .attr("id", "land")
-          .datum(topojson.feature(us, us.objects.land))
-          .attr("d", path);
-
-      map_g.append("clipPath")
-          .attr("id", "clip-land")
-        .append("use")
-          .attr("xlink:href", "#land");
+//         $("#district-rank").remove();
+//         $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
+        
+//         var ctx = $("#district-rank");
           
-      // congressional districts
-      map_g.append("g")
-          .attr("class", "districts")
-          .attr("clip-path", "url(#clip-land)")
-          .selectAll("path")
-          .data(topojson.feature(congress, congress.objects.districts).features)
-      .enter().append("path")
-          .attr("d", path)
-          .style("fill", function (d) {
-            if (district[d.id]) {
-              return color(district[d.id]); }
-            else {
-              return "#F2F3F4"; }
-          })
-          .on("click", clicked)
+//           $.get("/chart-data-employee?year="+yearValue,
+//             function (results) {
+//                 var data = {
+//                   labels: results[0],
+//                   datasets: [
+//                   {
+//                     data: results[1],
+//                     backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
+//                   }]
+//             };
 
-        // show congressional district id on hover
-        .append("title")
-          .text(function(d) { return d.id; });
+//             var districtRankChart = new Chart(ctx, {
+//               type: 'horizontalBar',
+//               data: data,
+//               options: {
+//                   responsive: false,
+//                   title: {
+//                       display: true,
+//                       text: 'Districts With Highest % Female Employees'},
+//                   legend: {
+//                       display: false
+//                   }
+//                     }}
+//                   );
+//           });
+//         } // end if statement
 
-      // draw district & state boundaries
-      map_g.append("path")
-          .attr("class", "district-boundaries")
-          .datum(topojson.mesh(congress, congress.objects.districts,
-            function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))
-          .attr("d", path);
+//  else if ( zipOnly === true ) {
+    
+//     $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
 
-      map_g.append("path")
-          .attr("class", "state-boundaries")
-          .datum(topojson.mesh(us, us.objects.states,
-            function(a, b) { return a !== b; }))
-          .attr("d", path);
-      
-        d3.select(self.frameElement).style("height", height + "px");
+//  } //end else if 
 
-    };
+//   });
 
 
-  createRankChartManager();
+
+// $("#manager").on("change", function () {
+
+//   console.log("manager button selection has been changed!");
 
 
-  // populate map with data showing % women employed overall by district
-  function womenEmployeesData() {
+//   var yearValue = $("#year").val();
+//   var zipcode = $("#zipcode-entry").val();
   
-    //draw chartjs chart
-    $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-    var ctx = $("#district-rank");
-    createRankChartEmployee();
-    
-    var minimum = 0.33,
-        maximum = 0.52;
+//   var zipOnly = $("#view-zip-compare").is(":checked");
 
-      queue()
-      .defer(d3.json, "/us.json")
-      .defer(d3.json, "/us-congress-113.json")
-      .defer(d3.json, "/district-employee-info.json")
-      .await(ready);
-
-  } // end womenEmployeesData
-
-  function womenEmployeesDataReverse() {
+//   queue()
+//         .defer(d3.json, "/us.json")
+//         .defer(d3.json, "/us-congress-113.json")
+//         .defer(d3.json, "/district-manager-info.json?year="+yearValue)
+//         .await(ready);
   
-    //draw chartjs chart
+//   if ( zipOnly === false ) {
 
-    $("#district-rank").remove();
-    $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-    var ctx = $("#district-rank");
-    createReverseChartEmployee();
+//     updateRankChartManager();
+
+//  } // end if statement
+
+//  else if ( zipOnly === true ) {
     
-    var minimum = 0.33,
-        maximum = 0.52;
+//     $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
 
-      queue()
-      .defer(d3.json, "/us.json")
-      .defer(d3.json, "/us-congress-113.json")
-      .defer(d3.json, "/district-employee-info.json")
-      .await(ready);
+//  } //end else if 
 
-  } // end womenEmployeesData
-
-
-  // populate map with data showing % women employed in management positions by district
-  function womenManagersData() {
-        
-        // draw chartjs chart
-        $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-        var ctx = $("#district-rank")
-        createRankChartManager();
-
-        var minimum = 0.28,
-            maximum = 0.62;
-
-        queue()
-        .defer(d3.json, "/us.json")
-        .defer(d3.json, "/us-congress-113.json")
-        .defer(d3.json, "/district-manager-info.json")
-        .await(ready);
-
-  } // end womenManagersData
-
-  function womenManagersDataReverse() {
-
-        // draw chartjs chart
-        $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-        var ctx = $("#district-rank")
-        createReverseChartManager();
-
-        var minimum = 0.28,
-            maximum = 0.62;
-
-        queue()
-        .defer(d3.json, "/us.json")
-        .defer(d3.json, "/us-congress-113.json")
-        .defer(d3.json, "/district-manager-info.json")
-        .await(ready);
-        // debugger
-
-  } // end womenManagersData
+// } // end anonymous function for on manager click.
+// );
 
 
 
+// // bottom five employee districts selected 
+// $("#bottomFiveEmp").on("change", function () {
 
-  // create bar chart
-  function createRankChartEmployee() {
-      
-      $("#district-rank").remove();
-      $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-      
-      var ctx = $("#district-rank");
+//     console.log("bottom five emp button has been changed!");
+    
+//     $("#district-rank").remove();
+//     $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
+    
+//     var ctx = $("#district-rank");
+//     var yearValue = $("#year").val();
 
-      var yearValue = $("#year").val();
-      
-      $.get("/chart-data-employee?year="+yearValue, function (results) {
-        var data = {
-          labels: results[0],
-          datasets: [
-          {
-            data: results[1],
-            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-          }]
-        };
+//     $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
+//       var data = {
+//         labels: results[0],
+//         datasets: [
+//         {
+//           data: results[1],
+//           backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
+//         }]
+//       };
 
-        var districtRankChart = new Chart(ctx, {
-          type: 'horizontalBar',
-          data: data,
-          options: {
-              responsive: false,
-              title: {
-                  display: true,
-                  text: 'Districts With Highest % Female Employees'},
-              legend: {
-                  display: false
-              }
-                }}
-              );
-      })
-    };
-
-
-  function createReverseChartEmployee() {
-      
-      $("#district-rank").remove();
-      $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-
-      var ctx = $("#district-rank");
-
-      var yearValue = $("#year").val();
-      
-      $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
-        var data = {
-          labels: results[0],
-          datasets: [
-          {
-            data: results[1],
-            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]            
-          }]
-        };
-
-        var districtRankChart = new Chart(ctx, {
-          type: 'horizontalBar',
-          data: data,
-          options: {
-              responsive: false,
-              title: {
-                  display: true,
-                  text: 'Districts With Lowest % Female Employees'},
-              legend: {
-                  display: false
-              }
-              }
-              });
-      })
-    };
+//       var districtRankChart = new Chart(ctx, {
+//         type: 'horizontalBar',
+//         data: data,
+//         options: {
+//             responsive: false,
+//             title: {
+//                 display: true,
+//                 text: 'Districts With Lowest % Female Employees'},
+//             legend: {
+//                 display: false
+//             }
+//             }
+//             });
+//     });
+//   }) 
 
 
-  function createRankChartManager() {
-      
-      $("#district-rank").remove();
-      $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-
-      var ctx = $("#district-rank");
-
-      var yearValue = $("#year").val();
-      
-      $.get("/chart-data-manager?year="+yearValue, function (results) {
-        var data = {
-          labels: results[0],
-          datasets: [
-          {
-            data: results[1],
-            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-          }]
-        };
-
-        var districtRankChart = new Chart(ctx, {
-          type: 'horizontalBar',
-          data: data,
-          options: {
-              responsive: false,
-              title: {
-                  display: true,
-                  text: 'Districts With Highest % Female Employees in Management'
-                },
-              legend: {
-                  display: false
-              }}
-              });
-      })
-    };
   
-  function createReverseChartManager() {
-      
-      $("#district-rank").remove();
-      $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
 
-      var ctx = $("#district-rank");
+// // bottom five manager districts selected
+//   $("#bottomFiveManager").on("change", function () {
 
-      var yearValue = $("#year").val();
+//   console.log("bottom five manager button has been changed!");
 
-      $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
-        var data = {
-          labels: results[0],
-          datasets: [
-          {
-            data: results[1],
-            backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-          }]
-        };
-
-        var districtRankChart = new Chart(ctx, {
-          type: 'horizontalBar',
-          data: data,
-          options: {
-              responsive: false,
-              title: {
-                  display: true,
-                  text: 'Districts With Lowest % Female Employees in Management'
-                },
-               legend: {
-                  display: false
-              }}
-              });
-      })
-    };
-
-
-
-
-
-    // change data based on button click
-    ////////////////////////////////////
-    // all employees button selected ///
-    
-    $("#allEmp").on("change", function () {    
-              
-              var yearValue = $("#year").val();
-              var zipcode = $("#zipcode-entry").val();
-
-              var zipOnly = $("#view-zip-compare").is(":checked");
-
-              queue()
-              .defer(d3.json, "/us.json")
-              .defer(d3.json, "/us-congress-113.json")
-              .defer(d3.json, "/district-employee-info.json?year="+yearValue)
-              .await(ready);
-
-        if ( zipOnly === false ) {
-
-              $("#district-rank").remove();
-              $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-              
-              var ctx = $("#district-rank")
-                
-                $.get("/chart-data-employee?year="+yearValue, 
-                  function (results) {
-                      var data = {
-                        labels: results[0],
-                        datasets: [
-                        {
-                          data: results[1],
-                          backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-                        }]
-                  };
-
-                  var districtRankChart = new Chart(ctx, {
-                    type: 'horizontalBar',
-                    data: data,
-                    options: {
-                        responsive: false,
-                        title: {
-                            display: true,
-                            text: 'Districts With Highest % Female Employees'},
-                        legend: {
-                            display: false
-                        }
-                          }}
-                        );
-                }) } // end if statement
-
-       else if ( zipOnly === true ) {
-          
-          $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-
-       } //end else if 
-
-        });
-    
-
-
-    $("#manager").on("change", function () {
-        var yearValue = $("#year").val();
-        var zipcode = $("#zipcode-entry").val();
-        
-        var zipOnly = $("#view-zip-compare").is(":checked");
-
-        queue()
-              .defer(d3.json, "/us.json")
-              .defer(d3.json, "/us-congress-113.json")
-              .defer(d3.json, "/district-manager-info.json?year="+yearValue)
-              .await(ready);
-        
-        if ( zipOnly === false ) {
-
-          function updateRankChartManager() {
-
-            $("#district-rank").remove();
-            $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-            
-            createRankChartManager();
-
-            }
-
-          updateRankChartManager(); 
-
-       } // end if statement
-
-       else if ( zipOnly === true ) {
-          
-          $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-
-       } //end else if 
-
-      } // end anonymous function for on manager click.
-      );
-
-      
-      // bottom five employee districts selected 
-      $("#bottomFiveEmp").on("change", function () {
-          
-          $("#district-rank").remove();
-          $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-          
-          var ctx = $("#district-rank")
-          var yearValue = $("#year").val();
-
-          $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
-            var data = {
-              labels: results[0],
-              datasets: [
-              {
-                data: results[1],
-                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]            
-              }]
-            };
-
-            var districtRankChart = new Chart(ctx, {
-              type: 'horizontalBar',
-              data: data,
-              options: {
-                  responsive: false,
-                  title: {
-                      display: true,
-                      text: 'Districts With Lowest % Female Employees'},
-                  legend: {
-                      display: false
-                  }
-                  }
-                  });
-          })
-        }); // end updateReverseChartEmployee
-
-
-      // bottom five manager districts selected
-
-        $("#bottomFiveManager").on("change", function () {
-
-        // draw chartjs chart
-        $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-        
-        var ctx = $("#district-rank");
-
-        var yearValue = $("#year").val();
-
-        $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
-            var data = {
-              labels: results[0],
-              datasets: [
-              {
-                data: results[1],
-                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-              }]
-            };
-
-            var districtRankChart = new Chart(ctx, {
-              type: 'horizontalBar',
-              data: data,
-              options: {
-                  responsive: false,
-                  title: {
-                      display: true,
-                      text: 'Districts With Lowest % Female Employees in Management'
-                    },
-                   legend: {
-                      display: false
-                  }}
-                  });
-      })
-
-      });
-
-
-    //////////////////////
-    // was the slider used?
-
-    $("#year").on("input", function () {
-        var yearValue = $("#year").val();
-        var zipcode = $("#zipcode-entry").val();
-        var zipOnly = $("#view-zip-compare").is(":checked");
-
-        $("#currentYear").text("Percent women employed in " + yearValue);
-        $("#sliderYear").text(yearValue);
-
-
-        if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
-        
-          $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
-
-        } // end if statement
-
-        else if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "Managers") {
-
-          $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
-
-
-      } // end else if statement
-
-
-        else if ($('input[name=empType]:checked', '#category').val() === "Managers") {
+//   // draw chartjs chart
+//   $("#district-rank").remove();
+//   $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
   
-        queue()
-              .defer(d3.json, "/us.json")
-              .defer(d3.json, "/us-congress-113.json")
-              .defer(d3.json, "/district-manager-info.json?year="+yearValue)
-              .await(ready);
-        
-        function updateRankChartManager() {
+//   var ctx = $("#district-rank");
 
-          $("#district-rank").remove();
-          $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-          
-          createRankChartManager();
+//   var yearValue = $("#year").val();
 
-          }
+//   $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
+//       var data = {
+//         labels: results[0],
+//         datasets: [
+//         {
+//           data: results[1],
+//           backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
+//         }]
+//       };
 
-        updateRankChartManager();
+//       var districtRankChart = new Chart(ctx, {
+//         type: 'horizontalBar',
+//         data: data,
+//         options: {
+//             responsive: false,
+//             title: {
+//                 display: true,
+//                 text: 'Districts With Lowest % Female Employees in Management'
+//               },
+//              legend: {
+//                 display: false
+//             }}
+//             });
+// });
 
-      } // end if statement (if radio button "manager is checked")
+// });
 
-      else if ($('input[name=empType]:checked', '#category').val() === "allEmps") {
-        
-        queue()
-              .defer(d3.json, "/us.json")
-              .defer(d3.json, "/us-congress-113.json")
-              .defer(d3.json, "/district-employee-info.json?year="+yearValue)
-              .await(ready);
 
-        function updateRankChartEmployee() {
+// //////////////////////
+// // was the slider used?
 
-          $("#district-rank").remove();
-          $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-          
-          var ctx = $("#district-rank")
-            
-            $.get("/chart-data-employee?year="+yearValue, 
-              function (results) {
-                  var data = {
-                    labels: results[0],
-                    datasets: [
-                    {
-                      data: results[1],
-                      backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-                    }]
-              };
+// $("#year").on("input", function () {
 
-              var districtRankChart = new Chart(ctx, {
-                type: 'horizontalBar',
-                data: data,
-                options: {
-                    responsive: false,
-                    title: {
-                        display: true,
-                        text: 'Districts With Highest % Female Employees'},
-                    legend: {
-                        display: false
-                    }
-                      }}
-                    );
-            })
+//   console.log("year input has changed!");
 
-      }
-        updateRankChartEmployee();
-    }
-    
-    else if ($("input[type=radio][id=bottomFiveEmp]:checked").val() == "on") {
+//   var yearValue = $("#year").val();
+//   var zipcode = $("#zipcode-entry").val();
+//   var zipOnly = $("#view-zip-compare").is(":checked");
 
-      function updateReverseChartEmployee() {
-          
-          $("#district-rank").remove();
-          $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-          
-          var ctx = $("#district-rank")
-          var yearValue = $("#year").val();
+//   $("#currentYear").text("Percent women employed in " + yearValue);
+//   $("#sliderYear").text(yearValue);
 
-          $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
-            var data = {
-              labels: results[0],
-              datasets: [
-              {
-                data: results[1],
-                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-              }]
-            };
 
-            var districtRankChart = new Chart(ctx, {
-              type: 'horizontalBar',
-              data: data,
-              options: {
-                  responsive: false,
-                  title: {
-                      display: true,
-                      text: 'Districts With Lowest % Female Employees in Management'
-                    },
-                   legend: {
-                      display: false
-                  }}
-                  });
-          })
+//   if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
+  
+//     $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
 
-          } // end updateReverseChartEmployee
+//   } // end if statement
 
-          updateReverseChartEmployee();
+//   else if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "Managers") {
 
-        } // end else if radio button checked is bottomFiveEmp
+//     $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
 
-    else if ($("input[type=radio][id=bottomFiveManager]:checked").val() == "on") {
 
-      function updateReverseChartManager() {
+// } // end else if statement
 
-        // draw chartjs chart
-        $("#district-rank").remove();
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-        
-        var ctx = $("#district-rank")
 
-        $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
-            var data = {
-              labels: results[0],
-              datasets: [
-              {
-                data: results[1],
-                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-              }]
-            };
+//   else if ($('input[name=empType]:checked', '#category').val() === "Managers") {
 
-            var districtRankChart = new Chart(ctx, {
-              type: 'horizontalBar',
-              data: data,
-              options: {
-                  responsive: false,
-                  title: {
-                      display: true,
-                      text: 'Districts With Lowest % Female Employees in Management'
-                    },
-                   legend: {
-                      display: false
-                  }}
-                  });
-      })
+//   queue()
+//         .defer(d3.json, "/us.json")
+//         .defer(d3.json, "/us-congress-113.json")
+//         .defer(d3.json, "/district-manager-info.json?year="+yearValue)
+//         .await(ready);
 
-      } // end updateReverseChartManager
+//   updateRankChartManager();
 
-      updateReverseChartManager();
+// } // end if statement (if radio button "manager is checked")
 
-      } // end else if radio butoon checked is bottomFiveManager
+// else if ($('input[name=empType]:checked', '#category').val() === "allEmps") {
+  
+//   queue()
+//         .defer(d3.json, "/us.json")
+//         .defer(d3.json, "/us-congress-113.json")
+//         .defer(d3.json, "/district-employee-info.json?year="+yearValue)
+//         .await(ready);
 
-    })
+
+//   updateRankChartEmployee();
+// }
+
+// else if ($("input[type=radio][id=bottomFiveEmp]:checked").val() == "on") {
+
+//     updateReverseChartEmployee();
+
+//   } // end else if radio button checked is bottomFiveEmp
+
+// else if ($("input[type=radio][id=bottomFiveManager]:checked").val() == "on") {
+
+//   updateReverseChartManager();
+
+// } // end else if radio butoon checked is bottomFiveManager
+
+// });
 
       
     </script>
-
     </div>
+  
   </body>
 </html>

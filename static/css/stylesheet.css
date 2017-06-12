@@ -1,8 +1,53 @@
-  body {
-    background: url(static/css/concrete-texture.png) repeat center center;
-  }
+console.log("im here")
 
- #main-container {
+body {
+  background: url(static/css/concrete-texture.png) repeat center center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+path {
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+svg {
+  display: block;
+  margin-left: auto;
+  margin-right: 45%;
+}
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+.districts {
+  fill: #bbb;
+}
+
+.districts :hover {
+  fill: #e11a88;
+}
+
+.district-boundaries {
+  pointer-events: none;
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+.state-boundaries {
+  pointer-events: none;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.25px;
+}
+
+  #main-container {
     margin: 2em;
     padding: 0;
   }
@@ -24,7 +69,7 @@
   }
 
 #changeYear {
-  margin-left: 2em;
+  margin-left: 1em;
   margin-top: 0em;
   width: 6em;
   display: inline-block;
@@ -42,13 +87,21 @@
   float: right;
   margin-top: 2em;
   width: 450px;
-  height: 225px;
+  height: 230px;
   background-color: #E0E6EB;
   border-radius: 5px;
 }
 
 #category {
-  margin-top: 1em;
+  margin: 0em;
+}
+
+#explore {
+  margin: 0.5em 0em 0em 0em;
+}
+
+#selectButton {
+  font-size: 85%;
 }
 
 #bottomFiveLabel {
@@ -61,7 +114,7 @@
 
 #zipcode-search {
   margin-top: 0.5em;
-  padding-right: 2em;
+  padding-right: 5em;
   float: right;
 }
 
@@ -74,20 +127,49 @@
   width: 13em;
 }
 
-.navbar-inverse {
-  background-color: #C0CCD6;
+.navbar-grabBack {
+  background: #424446;
+  border-radius: 1px;
+  box-shadow: none;
 }
+
 
 #navTitle {
   padding-right: 0em;
+  color: #F0F0F1;
+  font-size: 180%;
+  font-weight: bold;
+  box-shadow: none;
 }
 
 #navHome {
-  padding-right: 1em;
-  padding-top: 1em;
+  padding-right: 0.25em;
+  padding-top: 0.75em;
+  font-size: 125%;
 }
 
 #navAbout {
   padding-left: 1em;
-  padding-top: 1em;
+  padding-top: 1.1em;
+  padding-top: 0.75em;
+  font-size: 125%;
+}
+
+#navHome a {
+  color: #F0F0F1;
+}
+
+#navAbout a {
+  color: #F0F0F1;
+
+}
+
+#navHome a:hover {
+  color: #2f78c4;
+  text-decoration: none;
+}
+
+#navAbout a:hover {
+  color: #2f78c4;
+  text-decoration: none;
 }
