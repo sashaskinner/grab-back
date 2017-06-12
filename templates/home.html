@@ -1,21 +1,16 @@
 <!DOCTYPE html>
-
 <head>
-
     <title>Grab Back</title>
     <meta charset="utf-8">
 
     <link rel="shortcut icon" type="image/png" href="http://icons.iconarchive.com/icons/sonya/swarm/128/Cat-icon.png"/>
-    
-    <!-- Links to style files-->
-    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">    
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 
+    <!-- JQuery -->
     <script
-      src="https://code.jquery.com/jquery-3.2.1.js"
-      integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
       crossorigin="anonymous"></script>
-
+    
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -25,20 +20,14 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <!-- d3.js -->
-    <script type="text/javascript" src="static/d3/d3.min.js"></script>
-    <script src="static/js/queue.v1.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
-    <!-- Chart.js -->
-    <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    
-    <script type="text/javascript" src="../static/js/functions.js"></script>
+    <!-- Links to my static files -->
+    <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 
 </head>
 
-<body>
+  <body>
+
 
     <!-- navbar -->
     <nav class="navbar navbar-grabBack bg-faded">
@@ -62,7 +51,15 @@
       </div> 
     </nav>
 
-
+      <!-- d3.js -->
+      <script type="text/javascript" src="static/d3/d3.min.js"></script>
+      <script src="static/js/queue.v1.min.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+      <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
+      <!-- Chart.js -->
+      <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    
   <!-- Begin Bootstrap Container -->
   <div class="container-fluid" id="main-container">
 
@@ -113,267 +110,18 @@
               <option>2015</option>
             </datalist>
         </div>
+
+
       </div>
     </div>
   </div>
 
 
+    <!-- BEGIN JS -->
+    <script type="text/javascript" src="../static/js/zipcode-functions.js"></script>
+    <script type="text/javascript" src="../static/js/functions.js"></script>
+    <script type="text/javascript" src="../static/js/d3-map.js"></script>
 
-<script type="text/javascript" src="../static/js/d3-map.js"></script>
-
-<script type="text/javascript">
-
-// // change data based on button click
-// ////////////////////////////////////
-// // all employees button selected ///
-
-// $("#allEmp").on("click", function () {
-//   alert("allEmp clicked");
-// });
-
-// $("#allEmp").on("change", function () {
-
-//         console.log("allEmp button selection has been changed!");
-        
-//         var yearValue = $("#year").val();
-//         var zipcode = $("#zipcode-entry").val();
-
-//         var zipOnly = $("#view-zip-compare").is(":checked");
-
-//         queue()
-//         .defer(d3.json, "/us.json")
-//         .defer(d3.json, "/us-congress-113.json")
-//         .defer(d3.json, "/district-employee-info.json?year="+yearValue)
-//         .await(ready);
-
-//   if ( zipOnly === false ) {
-
-//         $("#district-rank").remove();
-//         $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-        
-//         var ctx = $("#district-rank");
-          
-//           $.get("/chart-data-employee?year="+yearValue,
-//             function (results) {
-//                 var data = {
-//                   labels: results[0],
-//                   datasets: [
-//                   {
-//                     data: results[1],
-//                     backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-//                   }]
-//             };
-
-//             var districtRankChart = new Chart(ctx, {
-//               type: 'horizontalBar',
-//               data: data,
-//               options: {
-//                   responsive: false,
-//                   title: {
-//                       display: true,
-//                       text: 'Districts With Highest % Female Employees'},
-//                   legend: {
-//                       display: false
-//                   }
-//                     }}
-//                   );
-//           });
-//         } // end if statement
-
-//  else if ( zipOnly === true ) {
-    
-//     $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-
-//  } //end else if 
-
-//   });
-
-
-
-// $("#manager").on("change", function () {
-
-//   console.log("manager button selection has been changed!");
-
-
-//   var yearValue = $("#year").val();
-//   var zipcode = $("#zipcode-entry").val();
-  
-//   var zipOnly = $("#view-zip-compare").is(":checked");
-
-//   queue()
-//         .defer(d3.json, "/us.json")
-//         .defer(d3.json, "/us-congress-113.json")
-//         .defer(d3.json, "/district-manager-info.json?year="+yearValue)
-//         .await(ready);
-  
-//   if ( zipOnly === false ) {
-
-//     updateRankChartManager();
-
-//  } // end if statement
-
-//  else if ( zipOnly === true ) {
-    
-//     $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-
-//  } //end else if 
-
-// } // end anonymous function for on manager click.
-// );
-
-
-
-// // bottom five employee districts selected 
-// $("#bottomFiveEmp").on("change", function () {
-
-//     console.log("bottom five emp button has been changed!");
-    
-//     $("#district-rank").remove();
-//     $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
-    
-//     var ctx = $("#district-rank");
-//     var yearValue = $("#year").val();
-
-//     $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
-//       var data = {
-//         labels: results[0],
-//         datasets: [
-//         {
-//           data: results[1],
-//           backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-//         }]
-//       };
-
-//       var districtRankChart = new Chart(ctx, {
-//         type: 'horizontalBar',
-//         data: data,
-//         options: {
-//             responsive: false,
-//             title: {
-//                 display: true,
-//                 text: 'Districts With Lowest % Female Employees'},
-//             legend: {
-//                 display: false
-//             }
-//             }
-//             });
-//     });
-//   }) 
-
-
-  
-
-// // bottom five manager districts selected
-//   $("#bottomFiveManager").on("change", function () {
-
-//   console.log("bottom five manager button has been changed!");
-
-//   // draw chartjs chart
-//   $("#district-rank").remove();
-//   $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
-  
-//   var ctx = $("#district-rank");
-
-//   var yearValue = $("#year").val();
-
-//   $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
-//       var data = {
-//         labels: results[0],
-//         datasets: [
-//         {
-//           data: results[1],
-//           backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
-//         }]
-//       };
-
-//       var districtRankChart = new Chart(ctx, {
-//         type: 'horizontalBar',
-//         data: data,
-//         options: {
-//             responsive: false,
-//             title: {
-//                 display: true,
-//                 text: 'Districts With Lowest % Female Employees in Management'
-//               },
-//              legend: {
-//                 display: false
-//             }}
-//             });
-// });
-
-// });
-
-
-// //////////////////////
-// // was the slider used?
-
-// $("#year").on("input", function () {
-
-//   console.log("year input has changed!");
-
-//   var yearValue = $("#year").val();
-//   var zipcode = $("#zipcode-entry").val();
-//   var zipOnly = $("#view-zip-compare").is(":checked");
-
-//   $("#currentYear").text("Percent women employed in " + yearValue);
-//   $("#sliderYear").text(yearValue);
-
-
-//   if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
-  
-//     $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
-
-//   } // end if statement
-
-//   else if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "Managers") {
-
-//     $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
-
-
-// } // end else if statement
-
-
-//   else if ($('input[name=empType]:checked', '#category').val() === "Managers") {
-
-//   queue()
-//         .defer(d3.json, "/us.json")
-//         .defer(d3.json, "/us-congress-113.json")
-//         .defer(d3.json, "/district-manager-info.json?year="+yearValue)
-//         .await(ready);
-
-//   updateRankChartManager();
-
-// } // end if statement (if radio button "manager is checked")
-
-// else if ($('input[name=empType]:checked', '#category').val() === "allEmps") {
-  
-//   queue()
-//         .defer(d3.json, "/us.json")
-//         .defer(d3.json, "/us-congress-113.json")
-//         .defer(d3.json, "/district-employee-info.json?year="+yearValue)
-//         .await(ready);
-
-
-//   updateRankChartEmployee();
-// }
-
-// else if ($("input[type=radio][id=bottomFiveEmp]:checked").val() == "on") {
-
-//     updateReverseChartEmployee();
-
-//   } // end else if radio button checked is bottomFiveEmp
-
-// else if ($("input[type=radio][id=bottomFiveManager]:checked").val() == "on") {
-
-//   updateReverseChartManager();
-
-// } // end else if radio butoon checked is bottomFiveManager
-
-// });
-
-      
-    </script>
     </div>
-  
   </body>
 </html>
