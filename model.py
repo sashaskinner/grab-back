@@ -40,6 +40,9 @@ class CitizenGroup(db.Model):
     year = db.Column(db.Integer)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
 
+    # @staticmethod
+    # def get_chart_employee
+
     def __repr__(self):
         return "<Citizen: Female: %s, Manager: %s, Population: %r, dist_id: %r, state: %s >" % (
             self.female, self.manager, self.population, self.district_id, self.state_name)

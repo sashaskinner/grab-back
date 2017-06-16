@@ -1,16 +1,13 @@
-"""Flask server for Sasha's unnamed Hackbright project."""
+"""Flask server Grab Back."""
 
-from jinja2 import StrictUndefined
-
-from flask import Flask, request, render_template, redirect, jsonify
+from flask import Flask, request, render_template, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 import os
-import json
 import numpy as np
 from sqlalchemy import func
 
-from model import Location, CitizenGroup, ElectedRep, Zipcode, connect_to_db, db
+from model import Location, CitizenGroup, Zipcode, connect_to_db, db
 
 app = Flask(__name__)
 
@@ -33,6 +30,7 @@ def about():
     """About Page"""
 
     return render_template("about.html")
+
 
 @app.route('/us.json')
 def us_json():
@@ -400,7 +398,8 @@ def get_district_from_zipcode():
 
 
 def get_chart_employee(year):
-    """   """
+    """Get employee data for Chart.js bar graph."""
+
     has_pop = db.session.query(
         CitizenGroup.location_id,
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
@@ -453,7 +452,7 @@ def get_chart_manager(year):
 
 
 def get_us_emp_average():
-    """Get US average percentage women"""
+    """Get US average percentage women for entire labor force."""
 
     all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=False).all()
     all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=False, female=True)
@@ -464,7 +463,7 @@ def get_us_emp_average():
 
 
 def get_us_manager_average():
-    """Get US average percentage women"""
+    """Get US average percentage women for manager population."""
 
     all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True).all()
     all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True, female=True)
@@ -474,29 +473,9 @@ def get_us_manager_average():
     return us_manager_avg
 
 
-def get_state_emp_average():
-    """Get US average percentage women"""
-
-
-
-    return us_emp_avg
-
-
-def get_state_manager_average():
-    """Get US average percentage women"""
-
-    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True).all()
-    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=True, female=True)
-
-    us_emp_avg = all_lookup_women[0][0]/all_district_lookup[0][0]
-
-    return us_emp_avg
-
-
-
 if __name__ == "__main__":
 
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 

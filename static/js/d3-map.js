@@ -142,3 +142,5 @@
     }
 
   createRankChartManager();
+
+  
