@@ -35,21 +35,26 @@ I built Grab Back during my time as a Software Engineering Fellow at Hackbright 
 
 Users can view data for the percentage of women who make up the general labor force or management positions. A key displays which shades of blue represent which values. By default, the side-chart shows the 5 congressional districts that have the highest representation of the group currently displayed on the map and these districts are compared with the U.S. representation.
 
+
 <kbd>![Change Categories](/static/gif/grabBack_toggleLowest.gif)</kbd>
 
 Users can also update the side-chart to view the five districts with the lowest representation of women in each category. 
 
+
 <kbd>![Historical](/static/gif/grabBack_scrollYear.gif)</kbd>
 
-Users can also use a scroll bar update the map and chart to display historical data.
+The scroll bar updates the map and chart to display historical data.
+
 
 <kbd>![Zipcode](/static/gif/grabBack_zipSearch.gif)</kbd>
 
-When the user enters a zip-code, the side-chart will update to show the rate of employment of women in that zip-code's congressional district, the zip-code's state, and the U.S. as a whole. 
+Query for a congressional district by zipcode to update the side-chart to show the rate of employment of women in that zip-code's congressional district, the zip-code's state, and the U.S. as a whole. 
+
 
 <kbd>![Zipcode](/static/gif/grabBack-zoom.gif)</kbd>
 
 For the tiny districts out East, the user can zoom-in by clicking on a particular district, pan by clicking on another district, and zoom-out by clicking the same district twice.
+
 
 ## <a name="improvements"></a>Future Plans & Improvements
 
