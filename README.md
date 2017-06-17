@@ -12,21 +12,21 @@ I built Grab Back during my time as a Software Engineering Fellow at Hackbright 
 ## <a name="technologies"></a>Technologies
 
 <b>Front End</b>
-*Javascript
-*D3.js
-*Chart.js
-*jQuery
-*AJAX
-*Bootstrap
-*HTML5
-*CSS
+* Javascript
+* D3.js
+* Chart.js
+* jQuery
+* AJAX
+* Bootstrap
+* HTML5
+* CSS
 
 <b>Back End</b>
-*Python
-*Flask
-*Postgres
-*SQLAlchemy
-*NumPy
+* Python
+* Flask
+* Postgres
+* SQLAlchemy
+* NumPy
 
 
 ## <a name="features"></a>Features
@@ -53,10 +53,10 @@ For the tiny districts out East, the user can zoom-in by clicking on a particula
 
 ## <a name="improvements"></a>Future Plans & Improvements
 
-*Add testing to code.
-*Improve the interactivity of the map and chart, making changing categories of data or years more intuitive and easier to navigate.
-*Add more historical data.
-*Predict future data using predictive modeling.
+* Add testing to code.
+* Improve the interactivity of the map and chart, making changing categories of data or years more intuitive and easier to navigate.
+* Add more historical data.
+* Predict future data using predictive modeling.
 
 
 ## <a name="author"></a>Author
