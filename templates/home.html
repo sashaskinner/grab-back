@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<head>
+
+<html>
+  <head>
     <title>Grab Back</title>
     <meta charset="utf-8">
 
@@ -17,110 +19,123 @@
     
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 </head>
 
-  <body>
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-grabBack bg-faded">
+    <div class="container-fluid" id="navBarContainer">
+    <span class="navbar-brand" id="navTitle">Grab Back</span>
 
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul style="list-style: none" class="navbar-nav mr-auto mt-2 mt-md-0">
+        <li class="nav-item active" id="navHome">
+          <a class="nav-link" id="navHomeLink" href="http://localhost:5000/">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" id="navAbout">
+          <a class="nav-link" id="navAboutLink" href="http://localhost:5000/about">About</a>
+        </li>
+      </ul>
 
-    <!-- navbar -->
-    <nav class="navbar navbar-grabBack bg-faded">
-      <div class="container-fluid" id="navBarContainer">
-      <span class="navbar-brand" id="navTitle">Grab Back</span>
+      <!-- Zipcode Query Form in Navbar -->
+      <form class="form-inline my-2 my-lg-0" id="zipcode-search">
+        <input class="form-control mr-sm-2" id="zipcode-entry" type="text" placeholder="Find District by Zipcode">
+        <button class="btn btn-outline-success my-2 my-sm-0" id="zipcode-submit" type="submit">Search</button>
+      </form>
+    </div>
+    </div> 
+  </nav>
 
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul style="list-style: none" class="navbar-nav mr-auto mt-2 mt-md-0">
-          <li class="nav-item active" id="navHome">
-            <a class="nav-link" id="navHomeLink" href="http://localhost:5000/">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item" id="navAbout">
-            <a class="nav-link" id="navAboutLink" href="http://localhost:5000/about">About</a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0" id="zipcode-search">
-          <input class="form-control mr-sm-2" id="zipcode-entry" type="text" placeholder="Find District by Zipcode">
-          <button class="btn btn-outline-success my-2 my-sm-0" id="zipcode-submit" type="submit">Search</button>
-        </form>
-      </div>
-      </div> 
-    </nav>
-
-      <!-- d3.js -->
-      <script type="text/javascript" src="static/d3/d3.min.js"></script>
-      <script src="static/js/queue.v1.min.js"></script>
-      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-      <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js"></script>
-      <!-- Chart.js -->
-      <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+  <!-- d3.js -->
+  <script type="text/javascript" src="static/d3/d3.min.js"></script>
+  <script src="static/js/queue.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script type="text/javascript" src="static/js/d3-geo.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.min.js">
+  </script>
     
+  <!-- Chart.js -->
+  <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js">
+  </script>
+
   <!-- Begin Bootstrap Container -->
   <div class="container-fluid" id="main-container">
 
-  <!-- map & chart -->
-  <div class="row">
-    <div class="col-xs-12 col-md-12 col-lg-8 col-xl-8">
-      <div id="map-container"></div>
-    </div>
+    <!-- map & chart -->
+    <div class="row">
+      <div class="col-xs-12 col-md-12 col-lg-8 col-xl-8">
+        <div id="map-container"></div>
+      </div>
+    
     <!-- canvas for chart with top/bottom 5 % female employees -->
     <div class="col-xs-12 col-md-12 col-lg-4 col-xl-4">
       <div id="graph-container">
         <canvas id="district-rank" width="450" height="400"></canvas>
       </div>
+    
+    <!-- <div> to hold slider and buttons -->
+    <div id="dashboard">
+      <center>
+        <h3 id="explore">Explore Data</h3>
+      </center>
+      <br>
       
-      <div id="dashboard">
-        <center><h3 id="explore">Explore Data</h3></center><br>
-        <center><p id="selectButton">Choose a Category of Employee</p></center>
-          <!-- change categories -->
-          <center><div class="btn-group" data-toggle="buttons" id="category">
-            <label class="btn btn-sm btn-primary">
-              <input type="radio" name="empType" id="allEmp" value="allEmps">Entire Labor Force
-            </label>
+      <center>
+        <p id="selectButton">Choose a Category of Employee</p>
+      </center>
         
-            <label class="btn btn-sm btn-primary active">
-              <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Management Positions
-            </label>
-          </div></center>
-          <br>
-          <!-- see bottom five -->
-          <center><div class="btn-group" data-toggle="buttons" id="bottomFive">
-            <p id="bottomFiveLabel">Districts with Smallest Representation of: </p>
-            <label class="btn btn-xs btn-default">
-              <input type="radio" name="backRank" id="bottomFiveEmp">Entire Labor Force
-            </label>
-            <label class="btn btn-xs btn-default">
-              <input type="radio" name="backRank" id="bottomFiveManager">Management Positions
-            </label>
-        </div></center>
-
-         <!-- year slider -->
-        <h4 id="changeYear">Change Year</h4>
-        <div id="slider">
-            <input class="bar" id="year" type="range" min="2012" max="2015" step="1" value="2015"/>
-            <datalist id="steplist">
-              <option>2012</option>
-              <option>2013</option>
-              <option>2014</option>
-              <option>2015</option>
-            </datalist>
+      <!-- change categories -->
+      <center>
+        <div class="btn-group" data-toggle="buttons" id="category">
+          <label class="btn btn-sm btn-primary">
+            <input type="radio" name="empType" id="allEmp" value="allEmps">Entire Labor Force
+          </label>
+      
+          <label class="btn btn-sm btn-primary active">
+            <input type="radio" name="empType" id="manager" value="Managers" checked="checked">Management Positions
+          </label>
         </div>
+      </center>
+      <br>
+      
+      <!-- see bottom five -->
+      <center>
+        <div class="btn-group" data-toggle="buttons" id="bottomFive">
+        <p id="bottomFiveLabel">Districts with Smallest Representation of: </p>
+          <label class="btn btn-xs btn-default">
+            <input type="radio" name="backRank" id="bottomFiveEmp">Entire Labor Force
+          </label>
+          <label class="btn btn-xs btn-default">
+            <input type="radio" name="backRank" id="bottomFiveManager">Management Positions
+          </label>
+        </div>
+      </center>
 
-
+      <!-- year slider -->
+      <h4 id="changeYear">Change Year</h4>
+      <div id="slider">
+          <input class="bar" id="year" type="range" min="2012" max="2015" step="1" value="2015"/>
+          <datalist id="steplist">
+            <option>2012</option>
+            <option>2013</option>
+            <option>2014</option>
+            <option>2015</option>
+          </datalist>
       </div>
-    </div>
+    </div> <!--end dashboard div -->
+  </div> <!--end bootstrap column with chart & dashboard-->
   </div>
 
-    <!-- BEGIN JS -->
-    <script type="text/javascript" src="../static/js/zipcode-functions.js"></script>
-    <script type="text/javascript" src="../static/js/functions.js"></script>
-    <script type="text/javascript" src="../static/js/d3-map.js"></script>
+  <!-- BEGIN JS -->
+  <script type="text/javascript" src="../static/js/zipcode-functions.js"></script>
+  <script type="text/javascript" src="../static/js/functions.js"></script>
+  <script type="text/javascript" src="../static/js/d3-map.js"></script>
 
-    </div>
-  </body>
+  </div> <!-- end bootstrap container -->
+</body>
 </html>
