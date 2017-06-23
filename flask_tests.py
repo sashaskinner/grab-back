@@ -1,27 +1,27 @@
-import os
+import server
 import unittest
-import tempfile
-from server import app
 
 
-class FlaskTests(unittest.TestCase):
+class MyAppIntegrationTestCase(unittest.TestCase):
+    """Testing routes in Flask server."""
 
     def setUp(self):
-        """Stuff to do before every test"""
-
+        """ Set up configuration for tests."""
         self.client = server.app.test_client()
         server.app.config['TESTING'] = True
 
-    def tearDown(self):
-        """Stuff to do after every test"""
-        pass
-
-    def test1(self):
-        """Test some portion of the app."""
-
+    def test_index(self):
+        """Tests that index route leads to correct html file."""
         result = self.client.get('/')
+        self.assertIn('<h3 id="explore">Explore Data</h3>',
+                      result.data)
 
+    def test_about(self):
+        """Tests that /about leads to correct html file."""
+        result = self.client.get('/about')
+        self.assertIn('<h1>About</h1>', result.data)
+        self.assertIn('I hope that these graphics are useful for visualizing',
+                      result.data)
 
 if __name__ == '__main__':
-    # If called like a script, run our tests
     unittest.main()
