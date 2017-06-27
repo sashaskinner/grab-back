@@ -1,14 +1,17 @@
-import server
 import unittest
 
+import server
+import model
 
-class MyAppIntegrationTestCase(unittest.TestCase):
+
+class GrabBackTestCase(unittest.TestCase):
     """Testing routes in Flask server."""
 
     def setUp(self):
         """ Set up configuration for tests."""
         self.client = server.app.test_client()
         server.app.config['TESTING'] = True
+        connect_to_db(app, 'postgresql:///')
 
     def test_index(self):
         """Tests that index route leads to correct html file."""
@@ -22,6 +25,13 @@ class MyAppIntegrationTestCase(unittest.TestCase):
         self.assertIn('<h1>About</h1>', result.data)
         self.assertIn('I hope that these graphics are useful for visualizing',
                       result.data)
+
+    # def test_zipcode_form(self):
+    #     """Tests for zipcode form submission."""
+    #     result = self.client.get('/zipcode-lookup.json?year=2015',
+    #                              data={'zipcode-entry': '94709'})
+    #     assert result.args['year'] == '2015'
+
 
 if __name__ == '__main__':
     unittest.main()

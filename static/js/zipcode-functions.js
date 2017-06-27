@@ -1,15 +1,21 @@
       function ZipcodeLookup(results) {
+        
         // clear current chart
-        $("#district-rank").remove();        
+        $("#district-rank").remove();
+        
         // assign id for new chart.
-        $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
+        $("#graph-container").append(
+          "<canvas id='district-rank' width=450, height=400</canvas>");
+        
         var ctx = $("#district-rank");
         var empOn = $('input[name=empType]:checked', '#category').val();
-                
+        
+        // if button requesting entire labor force data is checked
+        // look-up results for that data        
         if ( empOn === "allEmps" ) {
             var data = {
               labels: ["District No. " + results.lookup_dist + " (All)",
-                        results.lookup_state, 
+                        results.lookup_state,
                         'U.S.'],
               datasets: [
               {
@@ -18,10 +24,12 @@
               }]
             };
         }
+        // if the allEmp button is not selected, 
+        // look up data for management positions
         else {
             var data = {
               labels: ["District No. " + results.lookup_dist + " (Managers)",
-                        results.lookup_state, 
+                        results.lookup_state,
                         'U.S.'],
               datasets: [
               {
@@ -30,6 +38,9 @@
               }]
             };
         }
+
+        // create Chart.js chart with data comparing requested zipcode to
+        // state average and U.S. average
         var stateUSCompare = new Chart(ctx, {
           type: 'horizontalBar',
           data: data,
@@ -42,11 +53,13 @@
                   display: true,
                   text: 'District vs State & US Average'
                 }}});
-      }; // end function
+      } // end function
+
       function getDistrictId(evt) {
           evt.preventDefault();
           var yearValue = $("#year").val();
           var zipcode = $("#zipcode-entry").val();
           $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
-      };
+      }
+
       $("#zipcode-submit").on("click", getDistrictId);

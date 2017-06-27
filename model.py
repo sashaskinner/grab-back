@@ -81,7 +81,12 @@ class Zipcode(db.Model):
 
 
 ##############################################################################
-# Helper function
+# Helper functions
+
+def example_data():
+    """Create sample data for testing app."""
+    pass
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
@@ -96,5 +101,5 @@ def connect_to_db(app):
 
 if __name__ == "__main__":
     from server import app
-    connect_to_db(app)
+    connect_to_db(app, 'postgresql:///test_db')
     print "Connected to DB."
