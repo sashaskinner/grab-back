@@ -85,14 +85,189 @@ class Zipcode(db.Model):
 
 def example_data():
     """Create sample data for testing app."""
-    pass
+
+    # add some sample locations
+    loc1 = Location(location_id=101, district_id=1, state_name='Alabama')
+    loc2 = Location(location_id=401, district_id=1, state_name='Arizona')
+    loc3 = Location(location_id=613, district_id=13, state_name='California')
+    loc4 = Location(location_id=5301, district_id=1, state_name='Washington')
+    loc5 = Location(location_id=5600, district_id=0, state_name='Wyoming')
+
+    # add sample citizen data
+
+    al1 = CitizenGroup(group_id=1,
+                       female=False,
+                       manager=False,
+                       population=112641,
+                       district_id=1,
+                       state_name='Alabama',
+                       year=2015)
+
+    al2 = CitizenGroup(group_id=436,
+                       female=False,
+                       manager=True,
+                       population=7834,
+                       district_id=1,
+                       state_name='Alabama',
+                       year=2015)
+
+    al3 = CitizenGroup(group_id=871,
+                       female=True,
+                       manager=False,
+                       population=90000,
+                       district_id=1,
+                       state_name='Alabama',
+                       year=2015)
+
+    al4 = CitizenGroup(group_id=1306,
+                       female=True,
+                       manager=True,
+                       population=4600,
+                       district_id=1,
+                       state_name='Alabama',
+                       year=2015)
 
 
-def connect_to_db(app):
+    az1 = CitizenGroup(group_id=9,
+                       female=False,
+                       manager=False,
+                       population=100000,
+                       district_id=1,
+                       state_name='Arizona',
+                       year=2015)
+
+    az2 = CitizenGroup(group_id=444,
+                       female=False,
+                       manager=True,
+                       population=6204,
+                       district_id=1,
+                       state_name='Arizona',
+                       year=2015)
+
+    az3 = CitizenGroup(group_id=879,
+                       female=True,
+                       manager=False,
+                       population=77000,
+                       district_id=1,
+                       state_name='Arizona',
+                       year=2015)
+
+    az4 = CitizenGroup(group_id=1314,
+                       female=True,
+                       manager=True,
+                       population=5000,
+                       district_id=1,
+                       state_name='Arizona',
+                       year=2015)
+
+
+    ca1 = CitizenGroup(group_id=22,
+                       female=False,
+                       manager=False,
+                       population=98000,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+    ca2  = CitizenGroup(group_id=457,
+                       female=False,
+                       manager=True,
+                       population=6900,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+    ca3 = CitizenGroup(group_id=892,
+                       female=True,
+                       manager=False,
+                       population=70000,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+    ca4 = CitizenGroup(group_id=1327,
+                       female=True,
+                       manager=True,
+                       population=5118,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+
+    wa1 = CitizenGroup(group_id=414,
+                       female=False,
+                       manager=False,
+                       population=160000,
+                       district_id=1,
+                       state_name='Washington',
+                       year=2015)
+
+    wa2 = CitizenGroup(group_id=849,
+                       female=False,
+                       manager=True,
+                       population=15000,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+    wa3 = CitizenGroup(group_id=1284,
+                       female=True,
+                       manager=False,
+                       population=94000,
+                       district_id=1,
+                       state_name='Washington',
+                       year=2015)
+
+    wa4 = CitizenGroup(group_id=1719,
+                       female=True,
+                       manager=True,
+                       population=9999,
+                       district_id=1,
+                       state_name='California',
+                       year=2015)
+
+
+    wy1 = CitizenGroup(group_id=435,
+                       female=False,
+                       manager=False,
+                       population=142000,
+                       district_id=0,
+                       state_name='Wyoming',
+                       year=2015)
+
+    wy2 = CitizenGroup(group_id=870,
+                       female=False,
+                       manager=True,
+                       population=7389,
+                       district_id=1,
+                       state_name='Wyoming',
+                       year=2015)
+
+    wy3 = CitizenGroup(group_id=1305,
+                       female=True,
+                       manager=False,
+                       population=83000,
+                       district_id=1,
+                       state_name='Wyoming',
+                       year=2015)
+
+    wy4 = CitizenGroup(group_id=1740,
+                       female=True,
+                       manager=True,
+                       population=6130,
+                       district_id=1,
+                       state_name='Wyoming',
+                       year=2015)
+
+    # add sample zipcode data
+
+
+
+def connect_to_db(app, db_uri="postgresql:///jobs"):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///jobs"
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     app.config["SQLALCHEMY_ECHO"] = True
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
@@ -101,5 +276,5 @@ def connect_to_db(app):
 
 if __name__ == "__main__":
     from server import app
-    connect_to_db(app, 'postgresql:///test_db')
+    connect_to_db(app)
     print "Connected to DB."

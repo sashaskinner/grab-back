@@ -95,37 +95,6 @@ def load_citizen_groups():
     db.session.commit()
 
 
-def load_elected_reps():
-    """Load data describing members of U.S. Congress to table in db."""
-
-    ElectedRep.query.delete()
-
-    with file('seed_data/elected_officials.csv', 'rb') as f:
-            reader = csv.reader(f)
-            congress_list = list(reader)
-            del congress_list[0]
-
-    for row in congress_list:
-
-        official_id, rep_type, female, state_name, district_id, year = row
-
-        q = db.session.query(Location.location_id).filter_by(district_id=int(district_id), state_name=state_name).one()
-
-        offic = ElectedRep(official_id=official_id,
-                           rep_type=rep_type,
-                           female=female,
-                           state_name=state_name,
-                           district_id=district_id,
-                           year=year,
-                           location_id=q)
-
-            # We need to add to the session or it won't ever be stored
-        db.session.add(offic)
-
-          # Once we're done, we should commit our work
-    db.session.commit()
-
-
 def load_zipcodes():
 
     with file('seed_data/zipcode.csv', 'rb') as f:
@@ -159,5 +128,4 @@ if __name__ == "__main__":
     # # Import different types of data
     load_locations()
     load_citizen_groups()
-    load_elected_reps()
     load_zipcodes()
