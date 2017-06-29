@@ -261,6 +261,35 @@ def example_data():
 
     # add sample zipcode data
 
+    zips = Zipcode(z_id=440,
+                   zipcode=36033,
+                   district_id=1,
+                   state_name="Alabama",
+                   location_id=101)
+
+    zips = Zipcode(z_id=883,
+                   zipcode=84154,
+                   district_id=1,
+                   state_name="Arizona",
+                   location_id=401)
+
+    zips = Zipcode(z_id=3232,
+                   zipcode=94709,
+                   district_id=13,
+                   state_name="California",
+                   location_id=613)
+
+    zips = Zipcode(z_id=3535,
+                   zipcode=98034,
+                   district_id=1,
+                   state_name="Washington",
+                   location_id=5301)
+
+    zips = Zipcode(z_id=3971,
+                   zipcode=83414,
+                   district_id=0,
+                   state_name="Wyoming",
+                   location_id=5600)
 
 
 def connect_to_db(app, db_uri="postgresql:///jobs"):
