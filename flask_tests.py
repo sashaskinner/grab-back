@@ -38,11 +38,7 @@ class GrabBackTestCase(unittest.TestCase):
         self.assertIn('I hope that these graphics are useful for visualizing',
                       result.data)
 
-    # def test_zipcode_form(self):
-    #     """Tests for zipcode form submission."""
-    #     result = self.client.get('/zipcode-lookup.json?year=2015',
-    #                              data={'zipcode-entry': '94709'})
-    #     assert result.args['year'] == '2015'
+    # add all other routes to test
 
 
 if __name__ == '__main__':
