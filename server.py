@@ -9,6 +9,8 @@ from sqlalchemy import func
 
 from model import Location, CitizenGroup, Zipcode, connect_to_db, db
 
+from format_data import format_manager_data
+
 app = Flask(__name__)
 
 # Secret key for Flask session and debug toolbar.
@@ -55,30 +57,7 @@ def get_manager_info():
     """
 
     y = request.args.get("year", 2015)
-    y = int(y)
-
-    has_pop = db.session.query(
-        CitizenGroup.location_id,
-        CitizenGroup.population, CitizenGroup.year).filter(CitizenGroup.population.isnot(None))
-
-    # MANAGERS
-    f_data = has_pop.filter_by(female=True, manager=True, year=y).all()
-    f_data_np = np.array(f_data)
-    f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=True, year=y).all()
-    m_data_np = np.array(m_data)
-    m_pop = m_data_np[:, 1]
-    total_pop = f_pop + m_pop
-
-    final_data = np.column_stack((f_data_np[:, 0], (f_pop/total_pop)))
-    final_data = final_data.tolist()
-
-    data_dict = {}
-
-    for i in range(len(final_data)):
-        data_dict[int(final_data[i][0])] = final_data[i][1]
-
-    return jsonify(data_dict)
+    return jsonify(format_manager_data(y))
 
 
 @app.route('/district-employee-info.json', methods=['GET'])

@@ -83,7 +83,7 @@ class Zipcode(db.Model):
 ##############################################################################
 # Helper functions
 
-def example_data():
+def create_example_data():
     """Create sample data for testing app."""
 
     # add some sample locations
@@ -92,6 +92,13 @@ def example_data():
     loc3 = Location(location_id=613, district_id=13, state_name='California')
     loc4 = Location(location_id=5301, district_id=1, state_name='Washington')
     loc5 = Location(location_id=5600, district_id=0, state_name='Wyoming')
+
+    db.session.add(loc1)
+    db.session.add(loc2)
+    db.session.add(loc3)
+    db.session.add(loc4)
+    db.session.add(loc5)
+    db.session.commit()
 
     # add sample citizen data
 
@@ -127,6 +134,12 @@ def example_data():
                        state_name='Alabama',
                        year=2015)
 
+    db.session.add(al1)
+    db.session.add(al2)
+    db.session.add(al3)
+    db.session.add(al4)
+    db.session.commit()
+
 
     az1 = CitizenGroup(group_id=9,
                        female=False,
@@ -159,6 +172,11 @@ def example_data():
                        district_id=1,
                        state_name='Arizona',
                        year=2015)
+    db.session.add(az1)
+    db.session.add(az2)
+    db.session.add(az3)
+    db.session.add(az4)
+    db.session.commit()
 
 
     ca1 = CitizenGroup(group_id=22,
@@ -192,7 +210,11 @@ def example_data():
                        district_id=1,
                        state_name='California',
                        year=2015)
-
+    db.session.add(ca1)
+    db.session.add(ca2)
+    db.session.add(ca3)
+    db.session.add(ca4)
+    db.session.commit()
 
     wa1 = CitizenGroup(group_id=414,
                        female=False,
@@ -226,6 +248,11 @@ def example_data():
                        state_name='California',
                        year=2015)
 
+    db.session.add(wa1)
+    db.session.add(wa2)
+    db.session.add(wa3)
+    db.session.add(wa4)
+    db.session.commit()
 
     wy1 = CitizenGroup(group_id=435,
                        female=False,
@@ -259,40 +286,54 @@ def example_data():
                        state_name='Wyoming',
                        year=2015)
 
+    db.session.add(wy1)
+    db.session.add(wy2)
+    db.session.add(wy3)
+    db.session.add(wy4)
+    db.session.commit()
+
     # add sample zipcode data
 
-    zips = Zipcode(z_id=440,
-                   zipcode=36033,
-                   district_id=1,
-                   state_name="Alabama",
-                   location_id=101)
+    zips_al = Zipcode(z_id=440,
+                      zipcode=36033,
+                      district_id=1,
+                      state_name="Alabama",
+                      location_id=101)
 
-    zips = Zipcode(z_id=883,
-                   zipcode=84154,
-                   district_id=1,
-                   state_name="Arizona",
-                   location_id=401)
+    zips_az = Zipcode(z_id=883,
+                      zipcode=84154,
+                      district_id=1,
+                      state_name="Arizona",
+                      location_id=401)
 
-    zips = Zipcode(z_id=3232,
-                   zipcode=94709,
-                   district_id=13,
-                   state_name="California",
-                   location_id=613)
+    zips_ca = Zipcode(z_id=3232,
+                      zipcode=94709,
+                      district_id=13,
+                      state_name="California",
+                      location_id=613)
 
-    zips = Zipcode(z_id=3535,
-                   zipcode=98034,
-                   district_id=1,
-                   state_name="Washington",
-                   location_id=5301)
+    zips_wa = Zipcode(z_id=3535,
+                      zipcode=98034,
+                      district_id=1,
+                      state_name="Washington",
+                      location_id=5301)
 
-    zips = Zipcode(z_id=3971,
-                   zipcode=83414,
-                   district_id=0,
-                   state_name="Wyoming",
-                   location_id=5600)
+    zips_wy = Zipcode(z_id=3971,
+                      zipcode=83414,
+                      district_id=0,
+                      state_name="Wyoming",
+                      location_id=5600)
+
+    db.session.add(zips_al)
+    db.session.add(zips_az)
+    db.session.add(zips_ca)
+    db.session.add(zips_wa)
+    db.session.add(zips_wy)
+    db.session.commit()
 
 
-def connect_to_db(app, db_uri="postgresql:///jobs"):
+#def connect_to_db(app, db_uri="postgresql:///jobs"):
+def connect_to_db(app, db_uri="postgresql:///testdb"):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
