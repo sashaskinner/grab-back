@@ -1,7 +1,6 @@
 """Models and database functions for Sasha's Unnamed Project."""
 
 from flask_sqlalchemy import SQLAlchemy
-import psycopg2
 
 db = SQLAlchemy()
 
@@ -17,7 +16,7 @@ class Location(db.Model):
     location_id = db.Column(db.Integer, autoincrement=False, primary_key=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(15), nullable=False)
-    elected_reps = db.relationship("ElectedRep", backref=db.backref("location"))
+    # elected_reps = db.relationship("ElectedRep", backref=db.backref("location"))
     zipcode = db.relationship("Zipcode", backref=db.backref("location"))
     citizen_groups = db.relationship("CitizenGroup", backref=db.backref("location"))
 
@@ -48,21 +47,21 @@ class CitizenGroup(db.Model):
             self.female, self.manager, self.population, self.district_id, self.state_name)
 
 
-class ElectedRep(db.Model):
+# class ElectedRep(db.Model):
 
-    __tablename__ = "elected_reps"
+#     __tablename__ = "elected_reps"
 
-    official_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    rep_type = db.Column(db.String(10), nullable=False)
-    female = db.Column(db.Boolean, nullable=False)
-    state_name = db.Column(db.String(20), nullable=False)
-    district_id = db.Column(db.Integer, nullable=True)
-    year = db.Column(db.Integer)
-    location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
+#     official_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     rep_type = db.Column(db.String(10), nullable=False)
+#     female = db.Column(db.Boolean, nullable=False)
+#     state_name = db.Column(db.String(20), nullable=False)
+#     district_id = db.Column(db.Integer, nullable=True)
+#     year = db.Column(db.Integer)
+#     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
 
-    def __repr__(self):
-        return "<ElectedRep: RepType: %s, Female: %s, dist_id: %d, state: %s>" % (
-            self.rep_type, self.female, self.district_id, self.state_name)
+#     def __repr__(self):
+#         return "<ElectedRep: RepType: %s, Female: %s, dist_id: %d, state: %s>" % (
+#             self.rep_type, self.female, self.district_id, self.state_name)
 
 
 class Zipcode(db.Model):
@@ -108,7 +107,8 @@ def create_example_data():
                        population=112641,
                        district_id=1,
                        state_name='Alabama',
-                       year=2015)
+                       year=2015,
+                       location_id=101)
 
     al2 = CitizenGroup(group_id=436,
                        female=False,
@@ -116,7 +116,8 @@ def create_example_data():
                        population=7834,
                        district_id=1,
                        state_name='Alabama',
-                       year=2015)
+                       year=2015,
+                       location_id=101)
 
     al3 = CitizenGroup(group_id=871,
                        female=True,
@@ -124,7 +125,8 @@ def create_example_data():
                        population=90000,
                        district_id=1,
                        state_name='Alabama',
-                       year=2015)
+                       year=2015,
+                       location_id=101)
 
     al4 = CitizenGroup(group_id=1306,
                        female=True,
@@ -132,7 +134,8 @@ def create_example_data():
                        population=4600,
                        district_id=1,
                        state_name='Alabama',
-                       year=2015)
+                       year=2015,
+                       location_id=101)
 
     db.session.add(al1)
     db.session.add(al2)
@@ -140,14 +143,14 @@ def create_example_data():
     db.session.add(al4)
     db.session.commit()
 
-
     az1 = CitizenGroup(group_id=9,
                        female=False,
                        manager=False,
                        population=100000,
                        district_id=1,
                        state_name='Arizona',
-                       year=2015)
+                       year=2015,
+                       location_id=401)
 
     az2 = CitizenGroup(group_id=444,
                        female=False,
@@ -155,7 +158,8 @@ def create_example_data():
                        population=6204,
                        district_id=1,
                        state_name='Arizona',
-                       year=2015)
+                       year=2015,
+                       location_id=401)
 
     az3 = CitizenGroup(group_id=879,
                        female=True,
@@ -163,7 +167,8 @@ def create_example_data():
                        population=77000,
                        district_id=1,
                        state_name='Arizona',
-                       year=2015)
+                       year=2015,
+                       location_id=401)
 
     az4 = CitizenGroup(group_id=1314,
                        female=True,
@@ -171,13 +176,14 @@ def create_example_data():
                        population=5000,
                        district_id=1,
                        state_name='Arizona',
-                       year=2015)
+                       year=2015,
+                       location_id=401)
+
     db.session.add(az1)
     db.session.add(az2)
     db.session.add(az3)
     db.session.add(az4)
     db.session.commit()
-
 
     ca1 = CitizenGroup(group_id=22,
                        female=False,
@@ -185,15 +191,17 @@ def create_example_data():
                        population=98000,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=613)
 
-    ca2  = CitizenGroup(group_id=457,
+    ca2 = CitizenGroup(group_id=457,
                        female=False,
                        manager=True,
                        population=6900,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=613)
 
     ca3 = CitizenGroup(group_id=892,
                        female=True,
@@ -201,7 +209,8 @@ def create_example_data():
                        population=70000,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=613)
 
     ca4 = CitizenGroup(group_id=1327,
                        female=True,
@@ -209,7 +218,9 @@ def create_example_data():
                        population=5118,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=613)
+
     db.session.add(ca1)
     db.session.add(ca2)
     db.session.add(ca3)
@@ -222,7 +233,8 @@ def create_example_data():
                        population=160000,
                        district_id=1,
                        state_name='Washington',
-                       year=2015)
+                       year=2015,
+                       location_id=5301)
 
     wa2 = CitizenGroup(group_id=849,
                        female=False,
@@ -230,7 +242,8 @@ def create_example_data():
                        population=15000,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=5301)
 
     wa3 = CitizenGroup(group_id=1284,
                        female=True,
@@ -238,7 +251,8 @@ def create_example_data():
                        population=94000,
                        district_id=1,
                        state_name='Washington',
-                       year=2015)
+                       year=2015,
+                       location_id=5301)
 
     wa4 = CitizenGroup(group_id=1719,
                        female=True,
@@ -246,7 +260,8 @@ def create_example_data():
                        population=9999,
                        district_id=1,
                        state_name='California',
-                       year=2015)
+                       year=2015,
+                       location_id=5301)
 
     db.session.add(wa1)
     db.session.add(wa2)
@@ -260,7 +275,8 @@ def create_example_data():
                        population=142000,
                        district_id=0,
                        state_name='Wyoming',
-                       year=2015)
+                       year=2015,
+                       location_id=5600)
 
     wy2 = CitizenGroup(group_id=870,
                        female=False,
@@ -268,7 +284,8 @@ def create_example_data():
                        population=7389,
                        district_id=1,
                        state_name='Wyoming',
-                       year=2015)
+                       year=2015,
+                       location_id=5600)
 
     wy3 = CitizenGroup(group_id=1305,
                        female=True,
@@ -276,7 +293,8 @@ def create_example_data():
                        population=83000,
                        district_id=1,
                        state_name='Wyoming',
-                       year=2015)
+                       year=2015,
+                       location_id=5600)
 
     wy4 = CitizenGroup(group_id=1740,
                        female=True,
@@ -284,7 +302,8 @@ def create_example_data():
                        population=6130,
                        district_id=1,
                        state_name='Wyoming',
-                       year=2015)
+                       year=2015,
+                       location_id=5600)
 
     db.session.add(wy1)
     db.session.add(wy2)
@@ -332,8 +351,7 @@ def create_example_data():
     db.session.commit()
 
 
-#def connect_to_db(app, db_uri="postgresql:///jobs"):
-def connect_to_db(app, db_uri="postgresql:///testdb"):
+def connect_to_db(app, db_uri="postgresql:///jobs"):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
@@ -348,3 +366,4 @@ if __name__ == "__main__":
     from server import app
     connect_to_db(app)
     print "Connected to DB."
+    db.create_all()
