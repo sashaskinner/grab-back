@@ -1,7 +1,6 @@
 from sqlalchemy import func
 from model import Location
 from model import CitizenGroup
-from model import ElectedRep
 from model import Zipcode
 
 from model import connect_to_db, db
