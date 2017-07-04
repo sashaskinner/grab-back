@@ -1,4 +1,3 @@
-from sqlalchemy import func
 from model import Location
 from model import CitizenGroup
 from model import Zipcode
@@ -21,7 +20,6 @@ def load_locations():
         location_list = list(reader)
         del location_list[0]
 
-
     # Read location list and insert data
 
     d = {}
@@ -32,13 +30,13 @@ def load_locations():
         d[location_id] = [district_id, state_name]
 
         if district_id == '':
-          loc = Location(location_id=location_id,
-                         district_id=None,
-                         state_name=state_name)
+            loc = Location(location_id=location_id,
+                           district_id=None,
+                           state_name=state_name)
         else:
-          loc = Location(location_id=location_id,
-                         district_id=district_id,
-                         state_name=state_name)
+            loc = Location(location_id=location_id,
+                           district_id=district_id,
+                           state_name=state_name)
 
         # We need to add to the session or it won't ever be stored
         db.session.add(loc)
