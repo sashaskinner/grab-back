@@ -26,7 +26,6 @@ I built Grab Back during my time as a Software Engineering Fellow at Hackbright 
 * Flask
 * Postgres
 * SQLAlchemy
-* NumPy
 
 
 ## <a name="features"></a>Features
@@ -66,8 +65,9 @@ For the tiny districts out East, the user can zoom-in by clicking on a particula
 
 ## <a name="improvements"></a>Future Plans & Improvements
 
-* Add testing to code.
+* Continue to add unit tests and integraton tests to code.
 * Improve the interactivity of the map and chart, making changing categories of data or years more intuitive and easier to navigate.
+* Add descriptive tooltips and change district color on hover to D3 map.
 * Add more historical data.
 * Predict future data using predictive modeling.
 
