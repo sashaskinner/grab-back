@@ -100,6 +100,7 @@ def get_district_from_zipcode():
     y = request.args.get("year", 2015)
     return jsonify(get_zipcode_data(z, y))
 
+
 ########### HELPER FUNCTIONS
 
 
