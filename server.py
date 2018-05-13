@@ -1,19 +1,19 @@
 """Flask server Grab Back."""
 
 from flask import Flask, request, render_template, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
 
 import os
 import numpy as np
 from sqlalchemy import func
 
-from model import Location, CitizenGroup, Zipcode, connect_to_db, db
-
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///jobs"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+from model import Location, CitizenGroup, Zipcode, connect_to_db, db
 
 # Secret key for Flask session and debug toolbar.
 FLASK_KEY = os.environ['FLASK_KEY']
-
 app.secret_key = FLASK_KEY
 
 
@@ -50,6 +50,7 @@ def us_congress_113():
 def get_manager_info():
     """Takes year input and returns manager json data to index. """
     y = request.args.get("year", 2015)
+    print(y)
     return jsonify(format_data(y, True))
 
 
@@ -81,6 +82,7 @@ def get_chart_data_manager():
     """Get data from db query to populate chart. """
 
     y = request.args.get("year", 2015)
+    print(y)
     return jsonify(format_chart_data(y, True))
 
 
@@ -120,10 +122,10 @@ def format_data(year, manager):
         CitizenGroup.population, CitizenGroup.year).filter(CitizenGroup.population
                                                            .isnot(None))
 
-    f_data = has_pop.filter_by(female=True, manager=manager, year=y).all()
+    f_data = has_pop.filter_by(female="t", manager='t', year=y).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=manager, year=y).all()
+    m_data = has_pop.filter_by(female="f", manager='t', year=y).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
@@ -148,10 +150,10 @@ def get_chart(year, manager):
         CitizenGroup.population).filter(CitizenGroup.population.isnot(None))
 
     # ALL EMPLOYED PERSONS POPULATION & DISTRICT INFO
-    f_data = has_pop.filter_by(female=True, manager=manager, year=year).all()
+    f_data = has_pop.filter_by(female="t", manager='t', year=year).all()
     f_data_np = np.array(f_data)
     f_pop = f_data_np[:, 1]
-    m_data = has_pop.filter_by(female=False, manager=manager, year=year).all()
+    m_data = has_pop.filter_by(female="f", manager='t', year=year).all()
     m_data_np = np.array(m_data)
     m_pop = m_data_np[:, 1]
     total_pop = f_pop + m_pop
@@ -278,13 +280,13 @@ def get_zipcode_data(zipcode, year, manager):
 
     # now lookup state averages for all & for managers
     all_state_lookup = db.session.query(func.sum(CitizenGroup.population).label(
-        'average')).filter_by(manager=manager,
+        'average')).filter_by(manager='t',
                               state_name=lookup_state,
                               year=y).all()
 
     all_state_lookup_women = db.session.query(func.sum(CitizenGroup.population).label(
-        'average')).filter_by(manager=manager,
-                              female=True,
+        'average')).filter_by(manager='t',
+                              female="t",
                               state_name=lookup_state,
                               year=y).all()
 
@@ -294,11 +296,11 @@ def get_zipcode_data(zipcode, year, manager):
     # all us averages
     us_lookup_all = db.session.query(func.sum(
         CitizenGroup.population).label(
-        'average')).filter_by(manager=manager, year=y).all()
+        'average')).filter_by(manager="t", year=y).all()
 
     us_lookup_women = db.session.query(func.sum(
         CitizenGroup.population).label(
-        'average')).filter_by(manager=manager, female=True, year=y).all()
+        'average')).filter_by(manager="t", female="t", year=y).all()
 
     us_avg = us_lookup_women[0][0]/us_lookup_all[0][0]
     us_percent = '{:.2f}'.format(us_avg * 100)
@@ -320,8 +322,8 @@ def get_us_average(manager):
 
     manager argument should be bool."""
 
-    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=manager).all()
-    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager=manager, female=True)
+    all_district_lookup = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager="t").all()
+    all_lookup_women = db.session.query(func.sum(CitizenGroup.population).label('average')).filter_by(manager="t", female="t")
 
     us_avg = all_lookup_women[0][0]/all_district_lookup[0][0]
 
@@ -335,6 +337,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(host="0.0.0.0")

@@ -15,7 +15,7 @@ def load_locations():
     # we won't be trying to add duplicate users
     Location.query.delete()
 
-    with file('seed_data/location.csv', 'rb') as f:
+    with open('seed_data/location.csv', 'r') as f:
         reader = csv.reader(f)
         location_list = list(reader)
         del location_list[0]
@@ -52,7 +52,7 @@ def load_citizen_groups():
     # we won't be trying to add duplicate users
     CitizenGroup.query.delete()
 
-    with file('seed_data/citizens-2014.csv', 'rb') as f:
+    with open('seed_data/citizens-2014.csv', 'r') as f:
         reader = csv.reader(f)
         citizens_list = list(reader)
         del citizens_list[0]
@@ -94,7 +94,7 @@ def load_citizen_groups():
 
 def load_zipcodes():
 
-    with file('seed_data/zipcode.csv', 'rb') as f:
+    with open('seed_data/zipcode.csv', 'r') as f:
         reader = csv.reader(f)
         zip_list = list(reader)
         del zip_list[0]

@@ -124,8 +124,9 @@
               }
               }
               });
-      })
-    };
+      });
+    }
+
   function createRankChartManager() {
       
       $("#district-rank").remove();
@@ -155,8 +156,8 @@
                   display: false
               }}
               });
-      })
-    };
+      });
+    }
   
   function createReverseChartManager() {
       
@@ -186,13 +187,14 @@
                   display: false
               }}
               });
-      })
-    };
+      });
+    }
+
     // change data based on button click
     ////////////////////////////////////
     // all employees button selected ///
     
-    $("#allEmp").on("change", function () {    
+    $("#allEmp").on("change", function () {
               
               var yearValue = $("#year").val();
               var zipcode = $("#zipcode-entry").val();
@@ -206,9 +208,9 @@
               $("#district-rank").remove();
               $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
               
-              var ctx = $("#district-rank")
+              var ctx = $("#district-rank");
                 
-                $.get("/chart-data-employee?year="+yearValue, 
+                $.get("/chart-data-employee?year="+yearValue,
                   function (results) {
                       var data = {
                         labels: results[0],
@@ -231,7 +233,7 @@
                         }
                           }}
                         );
-                }) } // end if statement
+                }); } // end if statement
        else if ( zipOnly === true ) {
           
           $.get("/zipcode-lookup.json?year="+yearValue, { "zipcode-entry":zipcode }, ZipcodeLookup);
@@ -250,13 +252,14 @@
               .await(ready);
         
         if ( zipOnly === false ) {
+
           function updateRankChartManager() {
             $("#district-rank").remove();
             $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
             
             createRankChartManager();
             }
-          updateRankChartManager(); 
+          updateRankChartManager();
        } // end if statement
        else if ( zipOnly === true ) {
           
@@ -271,7 +274,7 @@
           $("#district-rank").remove();
           $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
           
-          var ctx = $("#district-rank")
+          var ctx = $("#district-rank");
           var yearValue = $("#year").val();
           $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
             var data = {
@@ -279,7 +282,7 @@
               datasets: [
               {
                 data: results[1],
-                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]            
+                backgroundColor: ["#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#2f78c4", "#084081"]
               }]
             };
             var districtRankChart = new Chart(ctx, {
@@ -295,7 +298,7 @@
                   }
                   }
                   });
-          })
+          });
         }); // end updateReverseChartEmployee
       // bottom five manager districts selected
         $("#bottomFiveManager").on("change", function () {
@@ -327,7 +330,7 @@
                       display: false
                   }}
                   });
-      })
+      });
       });
     //////////////////////
     // was the slider used?
@@ -337,11 +340,11 @@
         var zipOnly = $("#view-zip-compare").is(":checked");
         $("#currentYear").text("Percent women employed in " + yearValue);
         $("#sliderYear").text(yearValue);
-        if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
+        if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "allEmps") {
         
           $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
         } // end if statement
-        else if (zipOnly == true && $('input[name=empType]:checked', '#category').val() === "Managers") {
+        else if (zipOnly === true && $('input[name=empType]:checked', '#category').val() === "Managers") {
           $.get("/zipcode-lookup.json?year="+yearValue, {"zipcode-entry":zipcode}, ZipcodeLookup);
       } // end else if statement
         else if ($('input[name=empType]:checked', '#category').val() === "Managers") {
@@ -371,9 +374,9 @@
           $("#district-rank").remove();
           $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
           
-          var ctx = $("#district-rank")
+          var ctx = $("#district-rank");
             
-            $.get("/chart-data-employee?year="+yearValue, 
+            $.get("/chart-data-employee?year="+yearValue,
               function (results) {
                   var data = {
                     labels: results[0],
@@ -396,7 +399,7 @@
                     }
                       }}
                     );
-            })
+            });
       }
         updateRankChartEmployee();
     }
@@ -407,7 +410,7 @@
           $("#district-rank").remove();
           $("#graph-container").append("<canvas id='district-rank' width=450, height=400></canvas>");
           
-          var ctx = $("#district-rank")
+          var ctx = $("#district-rank");
           var yearValue = $("#year").val();
           $.get("/chart-data-employee-reverse?year="+yearValue, function (results) {
             var data = {
@@ -431,7 +434,7 @@
                       display: false
                   }}
                   });
-          })
+          });
           } // end updateReverseChartEmployee
           updateReverseChartEmployee();
         } // end else if radio button checked is bottomFiveEmp
@@ -441,7 +444,7 @@
         $("#district-rank").remove();
         $("#graph-container").append("<canvas id='district-rank' width=450, height=400</canvas>");
         
-        var ctx = $("#district-rank")
+        var ctx = $("#district-rank");
         $.get("/chart-data-manager-reverse?year="+yearValue, function (results) {
             var data = {
               labels: results[0],
@@ -464,8 +467,8 @@
                       display: false
                   }}
                   });
-      })
+      });
       } // end updateReverseChartManager
       updateReverseChartManager();
       } // end else if radio butoon checked is bottomFiveManager
-    })
+    });

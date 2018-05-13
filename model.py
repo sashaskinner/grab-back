@@ -16,13 +16,12 @@ class Location(db.Model):
     location_id = db.Column(db.Integer, autoincrement=False, primary_key=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(15), nullable=False)
-    # elected_reps = db.relationship("ElectedRep", backref=db.backref("location"))
     zipcode = db.relationship("Zipcode", backref=db.backref("location"))
     citizen_groups = db.relationship("CitizenGroup", backref=db.backref("location"))
 
-    def __repr__(self):
-        return "<Location: location_id: %d, district_id: %d, state_name: %s>" % (
-            self.location_id, self.district_id, self.state_name)
+    # def __repr__(self):
+    #     return "<Location: location_id: %s, district_id: %s, state_name: %s>" % (
+    #         self.location_id, self.district_id, self.state_name)
 
 
 class CitizenGroup(db.Model):
@@ -31,8 +30,8 @@ class CitizenGroup(db.Model):
     __tablename__ = "citizen_groups"
 
     group_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    female = db.Column(db.Boolean, nullable=False)
-    manager = db.Column(db.Boolean, nullable=False)
+    female = db.Column(db.String(20), nullable=False)
+    manager = db.Column(db.String(20), nullable=False)
     population = db.Column(db.Float, nullable=True)
     district_id = db.Column(db.Integer, nullable=True)
     state_name = db.Column(db.String(20), nullable=False)
@@ -42,26 +41,9 @@ class CitizenGroup(db.Model):
     # @staticmethod
     # def get_chart_employee
 
-    def __repr__(self):
-        return "<Citizen: Female: %s, Manager: %s, Population: %r, dist_id: %r, state: %s >" % (
-            self.female, self.manager, self.population, self.district_id, self.state_name)
-
-
-# class ElectedRep(db.Model):
-
-#     __tablename__ = "elected_reps"
-
-#     official_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     rep_type = db.Column(db.String(10), nullable=False)
-#     female = db.Column(db.Boolean, nullable=False)
-#     state_name = db.Column(db.String(20), nullable=False)
-#     district_id = db.Column(db.Integer, nullable=True)
-#     year = db.Column(db.Integer)
-#     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
-
-#     def __repr__(self):
-#         return "<ElectedRep: RepType: %s, Female: %s, dist_id: %d, state: %s>" % (
-#             self.rep_type, self.female, self.district_id, self.state_name)
+    # def __repr__(self):
+    #     return "<Citizen: Female: %s, Manager: %s, Population: %r, dist_id: %r, state: %s >" % (
+    #         self.female, self.manager, self.population, self.district_id, self.state_name)
 
 
 class Zipcode(db.Model):
@@ -74,9 +56,9 @@ class Zipcode(db.Model):
     state_name = db.Column(db.String(20), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("locations.location_id"), nullable=False)
 
-    def __repr__(self):
-        return "<Zipcode: %d, dist_id: %d, state_name: %s>" % (
-            self.zipcode, self.district_id, self.state_name)
+    # def __repr__(self):
+    #     return "<Zipcode: %d, dist_id: %d, state_name: %s>" % (
+    #         self.zipcode, self.district_id, self.state_name)
 
 
 ##############################################################################
@@ -354,10 +336,6 @@ def create_example_data():
 def connect_to_db(app, db_uri="postgresql:///jobs"):
     """Connect the database to our Flask app."""
 
-    # Configure to use PostgreSQL database
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-    app.config["SQLALCHEMY_ECHO"] = True
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
 
@@ -365,5 +343,5 @@ def connect_to_db(app, db_uri="postgresql:///jobs"):
 if __name__ == "__main__":
     from server import app
     connect_to_db(app)
-    print "Connected to DB."
+    print("Connected to DB.")
     db.create_all()
