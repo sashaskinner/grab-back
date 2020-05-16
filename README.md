@@ -73,8 +73,4 @@ For the tiny districts out East, the user can zoom-in by clicking on a particula
 
 
 ## <a name="author"></a>Author
-Hi! My name is [Sasha Skinner](https://www.linkedin.com/in/sashaskinner) and I am a software engineer. I began my training at Hackbright Academy’s full-time Software Engineering Fellowship, an engineering bootcamp for women in San Francisco (graduated: June 2017). 
- 
-Prior to Hackbright, I spent several as a research assistant cognitive neuroscience lab at UCSF investigating how technology based interventions affect cognition. I especially enjoyed working with MRI data and was fascinated by the process of transforming a raw dataset into something meaningful. Before UCSF, I conducted community health education and outreach with AmeriCorps. 
- 
-I am passionate about data analysis, social justice, and improving healthcare and I believe that technology plays a critical role technology in advancing all of these fields. My goal as a software engineer is to make meaningful contributions to these fields while engaging my love of problem solving. If you have a role that you think that I would be a good fit for, please feel free to email sasha.skinner at gmail. 
+Hi! My name is [Sasha Skinner](https://www.linkedin.com/in/sashaskinner) and built this project during my time at Hackbright Academy’s full-time Software Engineering Fellowship, an engineering bootcamp for women in San Francisco (graduated: June 2017). I am passionate about data analysis, social justice, and improving healthcare and I believe that technology plays a critical role technology in advancing all of these fields.
